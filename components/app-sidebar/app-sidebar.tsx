@@ -18,39 +18,39 @@ import {
 const items = [
   {
     title: 'Home',
-    url: '#',
+    url: '/',
     icon: Home,
   },
   {
     title: 'Your dogs',
-    url: '#',
+    url: '/dogs',
     icon: Inbox,
     items: [
       {
         title: 'Kira',
-        url: '#',
+        url: '/dogs/kira',
       },
       {
         title: 'Diego',
-        url: '#',
+        url: '/dogs/diego',
       },
     ],
   },
   {
     title: 'History',
-    url: '#',
+    url: '/history',
     icon: Calendar,
   },
   {
     title: 'Settings',
-    url: '#',
+    url: '/settings',
     icon: Settings,
   },
 ];
 
 export function AppSidebar() {
   return (
-    <Sidebar>
+    <Sidebar collapsible='icon'>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>AI Dog Behaviorist</SidebarGroupLabel>
