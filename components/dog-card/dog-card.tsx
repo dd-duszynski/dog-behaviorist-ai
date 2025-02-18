@@ -28,7 +28,7 @@ export function DogCard({ age, weight, name, breed, image }: TDogCardProps) {
       <CardContent>
         <Image src={image} alt={name} width={300} height={300} />
         <p>Age: {age}</p>
-        <p>weight: {weight}</p>
+        <p>weight: {weight} kg</p>
       </CardContent>
       <CardFooter>
         <Link className='w-full' href={`/dogs/${name}`}>
