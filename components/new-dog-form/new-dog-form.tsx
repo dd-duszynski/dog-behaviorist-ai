@@ -50,102 +50,96 @@ const dogBreeds = [
   { label: 'Chihuahua', value: 'Chihuahua' },
 ] as const;
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
-  }),
-  weight: z.string({
-    message: 'Weight is required.',
-  }),
-  healthProblems: z.string({
-    message: 'Weight is required.',
-  }),
-  origin: z.enum(['breeding', 'shelter', 'other'], {
-    required_error: 'You need to select an origin type.',
-  }),
-  originOther: z.string({
-    message: 'Weight is required.',
-  }),
-  breed: z.string({
-    required_error: 'Breed must be at least 2 characters.',
-  }),
-  favoriteFood: z.string().min(2, {
-    message: 'Favorite food must be at least 2 characters.',
-  }),
-  favoriteToy: z.string().min(2, {
-    message: 'Favorite toy must be at least 2 characters.',
-  }),
-  favoriteActivity: z.string().min(2, {
-    message: 'Favorite activity must be at least 2 characters.',
-  }),
-  activity: z.enum(['1', '2', '3', '4'], {
-    required_error: 'You need to select an activity type.',
-  }),
-  favoritePlace: z.string().min(2, {
-    message: 'Favorite place must be at least 2 characters.',
-  }),
-  gender: z.enum(['girl', 'boy'], {
-    required_error: 'You need to select gender.',
-  }),
-  castrated: z.enum(['yes', 'no'], {
-    required_error: 'You need to select gender.',
-  }),
-  castratedYear: z.string().min(2, {
-    message: 'Favorite place must be at least 2 characters.',
-  }),
-  basicFood: z.string().min(2, {
-    message: 'Favorite place must be at least 2 characters.',
-  }),
-  relationToFood: z.enum(['1', '2', '3'], {
-    message: 'Favorite place must be at least 2 characters.',
-  }),
-  favoriteSnack: z.string().min(2, {
-    message: 'Favorite place must be at least 2 characters.',
-  }),
-  others: z.string().min(10, {
-    message: 'Write something more.',
-  }),
-  birthDay: z.date({
-    required_error: 'A date of birth is required.',
-  }),
-});
+const formSchema = z
+  .object({
+    activityLevel: z.enum(['1', '2', '3', '4'], {
+      required_error: 'You need to select an activity type.',
+    }),
+    basicFood: z.string().min(3, {
+      message: 'Basic food must be at least 3 characters.',
+    }),
+    birthday: z.date({
+      required_error: 'A date of birth is required.',
+    }),
+    breed: z.string({
+      required_error: 'Breed must be selected.',
+    }),
+    castrated: z.enum(['YES', 'NO'], {
+      required_error: 'You need to select.',
+    }),
+    castratedYear: z.string(),
+    favoriteActivity: z.string().min(2, {
+      message: 'Favorite activity must be at least 2 characters.',
+    }),
+    favoritePlace: z.string(),
+    favoriteSnack: z.string(),
+    favoriteToy: z.string(),
+    gender: z.enum(['MALE', 'FEMALE'], {
+      required_error: 'You need to select gender.',
+    }),
+    healthProblems: z.string({
+      message: 'Weight is required.',
+    }),
+    name: z.string().min(2, {
+      message: 'Username must be at least 2 characters.',
+    }),
+    origin: z.enum(['BREEDING', 'SHELTER', 'OTHER'], {
+      required_error: 'You need to select an origin type.',
+    }),
+    originOther: z.string().optional(),
+    others: z.string().min(10, {
+      message: 'Write something more.',
+    }),
+    relationToFood: z.enum(['1', '2', '3', '4'], {
+      message: 'Favorite place must be at least 2 characters.',
+    }),
+    weight: z.string({
+      message: 'Weight is required.',
+    }),
+  })
+  .refine((data) => data.origin === 'OTHER' && !data.originOther, {
+    message: 'Origin other is required when origin is other',
+    path: ['originOther'],
+  });
 
 export function NewDogForm() {
   const [photo, setPhoto] = useState<File | null>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      activity: '1',
+      activityLevel: '1',
       basicFood: '',
+      birthday: new Date(),
       breed: '',
-      castrated: 'no',
+      castrated: 'NO',
       castratedYear: '',
       favoriteActivity: '',
-      favoriteFood: '',
       favoritePlace: '',
       favoriteSnack: '',
       favoriteToy: '',
-      gender: 'girl',
+      gender: 'FEMALE',
       healthProblems: '',
       name: '',
-      origin: 'breeding',
+      origin: 'BREEDING',
       originOther: '',
       others: '',
-      relationToFood: '2',
+      relationToFood: '1',
       weight: '0',
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
-  console.log(photo);
+  console.log(values);
+  // await createDog(values);
+
+  // async function onSubmit(values: z.infer<typeof formSchema>) {
+  //   // Do something with the form values.
+  //   // ✅ This will be type-safe and validated.
+  // }
 
   return (
     <Form {...form}>
       <form
+        // action={createDog}
         onSubmit={form.handleSubmit(onSubmit)}
         className='flex flex-col justify-center w-[600px] gap-4'
       >
@@ -211,7 +205,7 @@ export function NewDogForm() {
         />
         <FormField
           control={form.control}
-          name='birthDay'
+          name='birthday'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Date of birth</FormLabel>
@@ -290,7 +284,6 @@ export function NewDogForm() {
                             value={breed.label}
                             key={breed.value}
                             onSelect={() => {
-                              console.log('breed: ', breed);
                               form.setValue('breed', breed.value);
                             }}
                           >
@@ -351,7 +344,7 @@ export function NewDogForm() {
         />
         <FormField
           control={form.control}
-          name='activity'
+          name='activityLevel'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Czas aktywnosci</FormLabel>

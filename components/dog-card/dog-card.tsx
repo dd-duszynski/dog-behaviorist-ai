@@ -15,10 +15,16 @@ type TDogCardProps = {
   breed: string;
   age: number;
   weight: number;
-  image: string;
+  image?: string;
 };
 
-export function DogCard({ age, weight, name, breed, image }: TDogCardProps) {
+export function DogCard({
+  age,
+  weight,
+  name,
+  breed,
+  image = '/dog-default.jpg',
+}: TDogCardProps) {
   return (
     <Card className='w-[350px] flex flex-col justify-between'>
       <CardHeader>

@@ -1,78 +1,98 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Dog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   activityLevel    String
   basicFood        String
   birthday         DateTime
   breed            String
-  castrated        String
-  castratedYear    String
-  createdAt        DateTime @default(now())
-  favoriteActivity String?
-  favoritePlace    String
-  favoriteSnack    String
-  favoriteToy      String
-  gender           String
+  castrated        YesNo
+  castratedYear    String?
+  favoriteActivity String
+  favoritePlace    String?
+  favoriteSnack    String?
+  favoriteToy      String?
+  gender           Gender
   healthProblems   String
-  id               String   @id @default(cuid())
   name             String
-  origin           String
-  originOther      String
+  origin           Origin
+  originOther      String?
   others           String
   photo            Bytes?
   relationToFood   String
   slug             String   @unique
-  updatedAt        DateTime @updatedAt
   user             User     @relation(fields: [userId], references: [id])
   userId           String
   weight           String
 }
 
 model User {
-  Conversation Conversation[]
-  createdAt    DateTime       @default(now())
-  dogs         Dog[]
-  email        String         @unique
-  id           String         @id @default(cuid())
-  Message      Message[]
-  name         String
-  password     String
-  role         Role           @default(USER)
-  slug         String         @unique
-  updatedAt    DateTime       @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  clerkId       String         @unique
+  conversations Conversation[]
+  dogs          Dog[]
+  email         String         @unique
+  role          Role           @default(USER)
 }
 
 model Conversation {
-  createdAt DateTime  @default(now())
-  id        String    @id @default(cuid())
-  messages  Message[]
-  updatedAt DateTime  @updatedAt
-  user      User      @relation(fields: [userId], references: [id])
-  userId    String
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages Message[]
+  summary  String?
+  user     User      @relation(fields: [userId], references: [id])
+  userId   String
 }
 
 model Message {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   content        String
   conversation   Conversation @relation(fields: [conversationId], references: [id])
   conversationId String
-  createdAt      DateTime     @default(now())
-  id             String       @id @default(cuid())
-  updatedAt      DateTime     @updatedAt
-  user           User         @relation(fields: [userId], references: [id])
-  userId         String
+  isAIanswer     Boolean      @default(false)
 }
 
 enum Role {
   ADMIN
   USER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Origin {
+  BREEDING
+  SHELTER
+  OTHER
+}
+
+enum YesNo {
+  YES
+  NO
 }
