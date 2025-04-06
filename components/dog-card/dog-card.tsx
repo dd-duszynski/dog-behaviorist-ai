@@ -10,7 +10,7 @@ import { Button } from '../ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
 
-type TDogCardProps = {
+type DogCardProps = {
   name: string;
   breed: string;
   age: number;
@@ -24,7 +24,7 @@ export function DogCard({
   name,
   breed,
   image = '/dog-default.jpg',
-}: TDogCardProps) {
+}: DogCardProps) {
   return (
     <Card className='w-[350px] flex flex-col justify-between'>
       <CardHeader>

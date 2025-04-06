@@ -1,10 +1,25 @@
 import { DogCard } from '@/components/dog-card/dog-card';
 import { Button } from '@/components/ui/button';
 import prisma from '@/lib/db';
+import { getUserByClerkID } from '@/lib/getUserByClerkID';
 import Link from 'next/link';
 
+const getDogs = async () => {
+  const user = await getUserByClerkID();
+  console.log('user:', user);
+  const dogs = await prisma.dog.findMany({
+    where: {
+      userId: user?.id,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+  return dogs;
+};
+
 export default async function DogsPage() {
-  const dogs = await prisma.dogs.findMany();
+  const dogs = await getDogs();
   console.log('dogs:', dogs);
   return (
     <div className='flex gap-3 p-3'>
@@ -28,7 +43,7 @@ export default async function DogsPage() {
           name={dog.name}
           breed={dog.breed}
           age={new Date().getFullYear() - dog.birthday.getFullYear()}
-          weight={dog.weight}
+          weight={+dog.weight}
         />
       ))}
       <Link href='/new-dog'>

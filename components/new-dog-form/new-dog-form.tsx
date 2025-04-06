@@ -36,6 +36,7 @@ import {
   CommandList,
 } from '../ui/command';
 import { useState } from 'react';
+import { createDogAction } from '@/actions/createDogAction';
 
 const dogBreeds = [
   { label: 'Owczarek niemiecki', value: 'Owczarek niemiecki' },
@@ -50,59 +51,62 @@ const dogBreeds = [
   { label: 'Chihuahua', value: 'Chihuahua' },
 ] as const;
 
-const formSchema = z
-  .object({
-    activityLevel: z.enum(['1', '2', '3', '4'], {
-      required_error: 'You need to select an activity type.',
-    }),
-    basicFood: z.string().min(3, {
-      message: 'Basic food must be at least 3 characters.',
-    }),
-    birthday: z.date({
-      required_error: 'A date of birth is required.',
-    }),
-    breed: z.string({
-      required_error: 'Breed must be selected.',
-    }),
-    castrated: z.enum(['YES', 'NO'], {
-      required_error: 'You need to select.',
-    }),
-    castratedYear: z.string(),
-    favoriteActivity: z.string().min(2, {
-      message: 'Favorite activity must be at least 2 characters.',
-    }),
-    favoritePlace: z.string(),
-    favoriteSnack: z.string(),
-    favoriteToy: z.string(),
-    gender: z.enum(['MALE', 'FEMALE'], {
-      required_error: 'You need to select gender.',
-    }),
-    healthProblems: z.string({
-      message: 'Weight is required.',
-    }),
-    name: z.string().min(2, {
-      message: 'Username must be at least 2 characters.',
-    }),
-    origin: z.enum(['BREEDING', 'SHELTER', 'OTHER'], {
-      required_error: 'You need to select an origin type.',
-    }),
-    originOther: z.string().optional(),
-    others: z.string().min(10, {
-      message: 'Write something more.',
-    }),
-    relationToFood: z.enum(['1', '2', '3', '4'], {
-      message: 'Favorite place must be at least 2 characters.',
-    }),
-    weight: z.string({
-      message: 'Weight is required.',
-    }),
-  })
-  .refine((data) => data.origin === 'OTHER' && !data.originOther, {
-    message: 'Origin other is required when origin is other',
-    path: ['originOther'],
-  });
+const formSchema = z.object({
+  activityLevel: z.enum(['1', '2', '3', '4'], {
+    required_error: 'You need to select an activity type.',
+  }),
+  basicFood: z.string().min(2, {
+    message: 'Basic food must be at least 3 characters.',
+  }),
+  birthday: z.date({
+    required_error: 'A date of birth is required.',
+  }),
+  breed: z.string({
+    required_error: 'Breed must be selected.',
+  }),
+  castrated: z.enum(['YES', 'NO'], {
+    required_error: 'You need to select.',
+  }),
+  castratedYear: z.string(),
+  favoriteActivity: z.string().min(2, {
+    message: 'Favorite activity must be at least 2 characters.',
+  }),
+  favoritePlace: z.string(),
+  favoriteSnack: z.string(),
+  favoriteToy: z.string(),
+  gender: z.enum(['MALE', 'FEMALE'], {
+    required_error: 'You need to select gender.',
+  }),
+  healthProblems: z.string({
+    message: 'Weight is required.',
+  }),
+  name: z.string().min(2, {
+    message: 'Username must be at least 2 characters.',
+  }),
+  origin: z.enum(['BREEDING', 'SHELTER', 'OTHER'], {
+    required_error: 'You need to select an origin type.',
+  }),
+  originOther: z.string().optional(),
+  others: z.string().min(5, {
+    message: 'Write something more.',
+  }),
+  relationToFood: z.enum(['1', '2', '3', '4'], {
+    message: 'Favorite place must be at least 2 characters.',
+  }),
+  weight: z.string({
+    message: 'Weight is required.',
+  }),
+});
+// .refine((data) => data.origin === 'other' && !data.originOther, {
+//   message: 'Origin other is required when origin is other',
+//   path: ['originOther'],
+// });
 
-export function NewDogForm() {
+type NewDogFormProps = {
+  userId: string;
+};
+
+export function NewDogForm({ userId }: NewDogFormProps) {
   const [photo, setPhoto] = useState<File | null>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -128,20 +132,22 @@ export function NewDogForm() {
     },
   });
 
-  console.log(values);
-  // await createDog(values);
-
-  // async function onSubmit(values: z.infer<typeof formSchema>) {
-  //   // Do something with the form values.
-  //   // ✅ This will be type-safe and validated.
-  // }
+  // https://www.youtube.com/watch?v=dDpZfOQBMaU&ab_channel=leerob
+  async function onSubmit(
+    values: z.infer<typeof formSchema>,
+    event?: React.BaseSyntheticEvent
+  ) {
+    event?.preventDefault();
+    const result = await createDogAction(values, userId);
+    console.log('result:', result);
+  }
 
   return (
     <Form {...form}>
       <form
         // action={createDog}
-        onSubmit={form.handleSubmit(onSubmit)}
         className='flex flex-col justify-center w-[600px] gap-4'
+        onSubmit={form.handleSubmit(onSubmit)}
       >
         <Card className='w-full h-[300px] flex items-start justify-end'>
           <Button variant='outline' className='m-2 relative' type='button'>
@@ -186,15 +192,15 @@ export function NewDogForm() {
                 >
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
-                      <RadioGroupItem value='girl' />
+                      <RadioGroupItem value='MALE' />
                     </FormControl>
-                    <FormLabel className='font-normal'>Girl</FormLabel>
+                    <FormLabel className='font-normal'>Male</FormLabel>
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
-                      <RadioGroupItem value='boy' />
+                      <RadioGroupItem value='FEMALE' />
                     </FormControl>
-                    <FormLabel className='font-normal'>Boy</FormLabel>
+                    <FormLabel className='font-normal'>Female</FormLabel>
                   </FormItem>
                 </RadioGroup>
               </FormControl>
@@ -315,7 +321,7 @@ export function NewDogForm() {
             <FormItem>
               <FormLabel>Weight</FormLabel>
               <FormControl>
-                <Input type='number' placeholder='1' {...field} />
+                <Input type='number' placeholder='10' {...field} />
               </FormControl>
               <FormDescription>`This is your dog weight (kg)`</FormDescription>
               <FormMessage />
@@ -404,13 +410,13 @@ export function NewDogForm() {
                 >
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
-                      <RadioGroupItem value='yes' />
+                      <RadioGroupItem value='YES' />
                     </FormControl>
                     <FormLabel className='font-normal'>Yes</FormLabel>
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
-                      <RadioGroupItem value='no' />
+                      <RadioGroupItem value='NO' />
                     </FormControl>
                     <FormLabel className='font-normal'>No</FormLabel>
                   </FormItem>
@@ -451,19 +457,19 @@ export function NewDogForm() {
                 >
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
-                      <RadioGroupItem value='breeding' />
+                      <RadioGroupItem value='BREEDING' />
                     </FormControl>
                     <FormLabel className='font-normal'>Hodowla</FormLabel>
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
-                      <RadioGroupItem value='shelter' />
+                      <RadioGroupItem value='SHELTER' />
                     </FormControl>
                     <FormLabel className='font-normal'>Schronisko</FormLabel>
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
-                      <RadioGroupItem value='other' />
+                      <RadioGroupItem value='OTHER' />
                     </FormControl>
                     <FormLabel className='font-normal'>Inne</FormLabel>
                   </FormItem>
