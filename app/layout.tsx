@@ -5,6 +5,7 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar/app-sidebar';
 import { Header } from '@/components/header/header';
 import { ClerkProvider } from '@clerk/nextjs';
+import { getDogs } from '@/lib/getDogs';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -21,11 +22,12 @@ export const metadata: Metadata = {
   description: 'AI Dog behaviorist',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const dogs = await getDogs();
   return (
     <ClerkProvider>
       <html lang='en'>
@@ -33,7 +35,7 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <SidebarProvider>
-            <AppSidebar />
+            <AppSidebar dogs={dogs} />
             <main className='w-full min-h-full relative'>
               <Header />
               {children}

@@ -11,19 +11,21 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 type DogCardProps = {
-  name: string;
-  breed: string;
   age: number;
-  weight: number;
+  breed: string;
+  id: string;
   image?: string;
+  name: string;
+  weight: number;
 };
 
 export function DogCard({
   age,
-  weight,
-  name,
   breed,
+  id,
   image = '/dog-default.jpg',
+  name,
+  weight,
 }: DogCardProps) {
   return (
     <Card className='w-[350px] flex flex-col justify-between'>
@@ -37,7 +39,7 @@ export function DogCard({
         <p>weight: {weight} kg</p>
       </CardContent>
       <CardFooter>
-        <Link className='w-full' href={`/dogs/${name}`}>
+        <Link className='w-full' href={`/dogs/${id}`}>
           <Button className='w-full'>More info</Button>
         </Link>
       </CardFooter>

@@ -4,8 +4,6 @@ import prisma from '@/lib/db';
 
 // export async function createDog(formData: FormData) {
 export async function createDogAction(formData: any, userId: string) {
-  console.log('formData #1:', formData);
-  console.log('userId #1:', userId);
   try {
     const activityLevel = formData.activityLevel;
     const basicFood = formData.basicFood;

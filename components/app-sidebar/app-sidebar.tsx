@@ -1,5 +1,3 @@
-import { Calendar, Home, Inbox, Settings } from 'lucide-react';
-
 import {
   Sidebar,
   SidebarContent,
@@ -13,42 +11,48 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
+import { Calendar, Home, Inbox, Mars, Settings, Venus } from 'lucide-react';
+import type { Dog } from '@prisma/client';
 
-// Menu items.
-const items = [
-  {
-    title: 'Home',
-    url: '/',
-    icon: Home,
-  },
-  {
-    title: 'Your dogs',
-    url: '/dogs',
-    icon: Inbox,
-    items: [
-      {
-        title: 'Kira',
-        url: '/dogs/kira',
-      },
-      {
-        title: 'Diego',
-        url: '/dogs/diego',
-      },
-    ],
-  },
-  {
-    title: 'History',
-    url: '/history',
-    icon: Calendar,
-  },
-  {
-    title: 'Settings',
-    url: '/settings',
-    icon: Settings,
-  },
-];
+const generateMenuItems = (dogs: Dog[]) => {
+  const dogsItems = dogs.map((dog: Dog) => ({
+    title: dog.name,
+    url: `/dogs/${dog.id}`,
+    icon: dog.gender === 'MALE' ? <Mars /> : <Venus />,
+  }));
 
-export function AppSidebar() {
+  return [
+    {
+      title: 'Home',
+      url: '/',
+      icon: Home,
+    },
+    {
+      title: 'Your dogs',
+      url: '/dogs',
+      icon: Inbox,
+      items: dogsItems,
+    },
+    {
+      title: 'History',
+      url: '/history',
+      icon: Calendar,
+    },
+    {
+      title: 'Settings',
+      url: '/settings',
+      icon: Settings,
+    },
+  ];
+};
+
+type AppSidebarProps = {
+  dogs: Dog[];
+};
+
+export function AppSidebar({ dogs }: AppSidebarProps) {
+  console.log('dogs:', dogs);
+  const menuItems = generateMenuItems(dogs);
   return (
     <Sidebar collapsible='icon'>
       <SidebarContent>
@@ -56,7 +60,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>AI Dog Behaviorist</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <a href={item.url}>

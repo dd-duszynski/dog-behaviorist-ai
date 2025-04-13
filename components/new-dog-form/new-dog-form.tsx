@@ -1,15 +1,5 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import {
-  Calendar as CalendarIcon,
-  Camera as CameraIcon,
-  ChevronsUpDown,
-  Check,
-} from 'lucide-react';
-import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -20,11 +10,21 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '../ui/textarea';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { createDogAction } from '@/lib/createDogAction';
 import { cn } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { format } from 'date-fns';
+import {
+  Calendar as CalendarIcon,
+  Camera as CameraIcon,
+  Check,
+  ChevronsUpDown,
+} from 'lucide-react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import { Calendar } from '../ui/calendar';
 import { Card } from '../ui/card';
 import {
@@ -35,8 +35,9 @@ import {
   CommandItem,
   CommandList,
 } from '../ui/command';
-import { useState } from 'react';
-import { createDogAction } from '@/actions/createDogAction';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Textarea } from '../ui/textarea';
+import { Dog } from '@prisma/client';
 
 const dogBreeds = [
   { label: 'Owczarek niemiecki', value: 'Owczarek niemiecki' },
@@ -52,7 +53,7 @@ const dogBreeds = [
 ] as const;
 
 const formSchema = z.object({
-  activityLevel: z.enum(['1', '2', '3', '4'], {
+  activityLevel: z.string({
     required_error: 'You need to select an activity type.',
   }),
   basicFood: z.string().min(2, {
@@ -90,7 +91,7 @@ const formSchema = z.object({
   others: z.string().min(5, {
     message: 'Write something more.',
   }),
-  relationToFood: z.enum(['1', '2', '3', '4'], {
+  relationToFood: z.string({
     message: 'Favorite place must be at least 2 characters.',
   }),
   weight: z.string({
@@ -103,32 +104,47 @@ const formSchema = z.object({
 // });
 
 type NewDogFormProps = {
+  mode: 'new';
   userId: string;
 };
 
-export function NewDogForm({ userId }: NewDogFormProps) {
+type EditDogFormProps = {
+  dog: Dog;
+  mode: 'edit';
+  userId: string;
+};
+
+export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
+  const { mode, userId } = props;
   const [photo, setPhoto] = useState<File | null>(null);
+
+  const isEditMode = mode === 'edit' ? true : false;
+  const dog = 'dog' in props ? props.dog : null;
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      activityLevel: '1',
-      basicFood: '',
-      birthday: new Date(),
-      breed: '',
-      castrated: 'NO',
-      castratedYear: '',
-      favoriteActivity: '',
-      favoritePlace: '',
-      favoriteSnack: '',
-      favoriteToy: '',
-      gender: 'FEMALE',
-      healthProblems: '',
-      name: '',
-      origin: 'BREEDING',
-      originOther: '',
-      others: '',
-      relationToFood: '1',
-      weight: '0',
+      activityLevel: isEditMode && dog ? dog.activityLevel : '1',
+      basicFood: isEditMode && dog ? dog.basicFood : '',
+      birthday: isEditMode && dog ? dog.birthday : new Date(),
+      breed: isEditMode && dog ? dog.breed : '',
+      castrated: isEditMode && dog ? dog.castrated : 'NO',
+      castratedYear:
+        isEditMode && dog && dog.castratedYear ? dog.castratedYear : '',
+      favoriteActivity: isEditMode && dog ? dog.favoriteActivity : '',
+      favoritePlace:
+        isEditMode && dog && dog.favoritePlace ? dog.favoritePlace : '',
+      favoriteSnack:
+        isEditMode && dog && dog.favoriteSnack ? dog.favoriteSnack : '',
+      favoriteToy: isEditMode && dog && dog.favoriteToy ? dog.favoriteToy : '',
+      gender: isEditMode && dog ? dog.gender : 'FEMALE',
+      healthProblems: isEditMode && dog ? dog.healthProblems : '',
+      name: isEditMode && dog ? dog.name : '',
+      origin: isEditMode && dog ? dog.origin : 'BREEDING',
+      originOther: isEditMode && dog && dog.originOther ? dog.originOther : '',
+      others: isEditMode && dog ? dog.others : '',
+      relationToFood: isEditMode && dog ? dog.relationToFood : '1',
+      weight: isEditMode && dog ? dog.weight : '0',
     },
   });
 
@@ -153,14 +169,14 @@ export function NewDogForm({ userId }: NewDogFormProps) {
           <Button variant='outline' className='m-2 relative' type='button'>
             <CameraIcon className='ml-auto h-4 w-4 opacity-50' />
             <input
-              type='file'
               accept='image/*'
+              className='absolute inset-0 opacity-0 cursor-pointer'
+              type='file'
               onChange={(e) => {
                 if (e.target.files && e.target.files[0]) {
                   setPhoto(e.target.files[0]);
                 }
               }}
-              className='absolute inset-0 opacity-0 cursor-pointer'
             />
           </Button>
         </Card>
