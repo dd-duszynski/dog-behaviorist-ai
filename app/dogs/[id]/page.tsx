@@ -58,7 +58,7 @@ export default async function DogPage({
             <p>Weight: {dog.weight} kg</p>
           </CardContent>
           <CardFooter>
-            <Link className='w-full' href={`/dogs/${id}`}>
+            <Link className='w-full' href={`/edit-dog/${id}`}>
               <Button className='w-full'>Edit</Button>
             </Link>
           </CardFooter>

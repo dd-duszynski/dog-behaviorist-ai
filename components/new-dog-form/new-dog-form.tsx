@@ -27,6 +27,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Calendar } from '../ui/calendar';
 import { Card } from '../ui/card';
+import { redirect } from 'next/navigation';
 import {
   Command,
   CommandEmpty,
@@ -38,6 +39,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Textarea } from '../ui/textarea';
 import { Dog } from '@prisma/client';
+import { updateDogAction } from '@/lib/updateDogAction';
 
 const dogBreeds = [
   { label: 'Owczarek niemiecki', value: 'Owczarek niemiecki' },
@@ -104,13 +106,13 @@ const formSchema = z.object({
 // });
 
 type NewDogFormProps = {
-  mode: 'new';
+  mode: 'create';
   userId: string;
 };
 
 type EditDogFormProps = {
   dog: Dog;
-  mode: 'edit';
+  mode: 'update';
   userId: string;
 };
 
@@ -118,7 +120,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
   const { mode, userId } = props;
   const [photo, setPhoto] = useState<File | null>(null);
 
-  const isEditMode = mode === 'edit' ? true : false;
+  const isEditMode = mode === 'update' ? true : false;
   const dog = 'dog' in props ? props.dog : null;
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -148,13 +150,22 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
     },
   });
 
+  /* TODO_DD:  */
   // https://www.youtube.com/watch?v=dDpZfOQBMaU&ab_channel=leerob
   async function onSubmit(
     values: z.infer<typeof formSchema>,
     event?: React.BaseSyntheticEvent
   ) {
     event?.preventDefault();
-    const result = await createDogAction(values, userId);
+    let result;
+    if (mode === 'create') {
+      result = await createDogAction(values, userId);
+      redirect(`/dogs`);
+    }
+    if (mode === 'update' && !!dog) {
+      result = await updateDogAction(values, userId, dog.id);
+      redirect(`/dogs/${dog.id}`);
+    }
     console.log('result:', result);
   }
 
@@ -649,7 +660,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
             </FormItem>
           )}
         />
-        <Button type='submit'>Submit</Button>
+        <Button type='submit'>{isEditMode ? 'Save' : ' Submit'}</Button>
       </form>
     </Form>
   );

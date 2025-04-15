@@ -6,7 +6,7 @@ export default async function NewDogPage() {
   if (!user) return <div>Unauthorized</div>;
   return (
     <div className='p-3 flex justify-center w-full'>
-      <NewDogForm userId={user.id} />
+      <NewDogForm userId={user.id} mode='create' />
     </div>
   );
 }
