@@ -34,7 +34,7 @@ export default async function DogsPage() {
         />
       ))}
       <Link href='/new-dog'>
-        <Button className='absolute bottom-4 right-4 bg-orange-400 hover:bg-orange-500'>
+        <Button variant='outline' className='absolute bottom-4 right-4 '>
           Add new dog
         </Button>
       </Link>

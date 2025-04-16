@@ -57,7 +57,7 @@ export async function updateDogAction(
     });
     return result;
   } catch (error) {
-    console.error('Error creating dog:', error);
+    console.error('Error in updateDogAction:', error);
     throw error;
   }
 }

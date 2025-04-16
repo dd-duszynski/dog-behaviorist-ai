@@ -51,7 +51,7 @@ export async function createDogAction(formData: any, userId: string) {
     });
     return result;
   } catch (error) {
-    console.error('Error creating dog:', error);
+    console.error('Error in createDogAction:', error);
     throw error;
   }
 }

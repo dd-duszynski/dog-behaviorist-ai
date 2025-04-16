@@ -40,7 +40,9 @@ export function DogCard({
       </CardContent>
       <CardFooter>
         <Link className='w-full' href={`/dogs/${id}`}>
-          <Button className='w-full'>More info</Button>
+          <Button className='w-full' variant='outline'>
+            More info
+          </Button>
         </Link>
       </CardFooter>
     </Card>

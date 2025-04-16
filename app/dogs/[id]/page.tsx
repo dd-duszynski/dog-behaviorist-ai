@@ -1,3 +1,5 @@
+import { DogEditableCard } from '@/components/dog-editable-card/dog-editable-card';
+import { Card } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -7,19 +9,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Mars, Venus } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Camera } from 'lucide-react';
 import { getDogById } from '@/lib/getDogById';
+import { Camera } from 'lucide-react';
+import Image from 'next/image';
 
 export default async function DogPage({
   params,
@@ -30,7 +22,7 @@ export default async function DogPage({
   const dog = await getDogById(id);
   if (!dog) return <div>Dog not found</div>;
   const defaultDogImage = dog?.photo || '/dog-default.jpg';
-  const dogAge = new Date().getFullYear() - dog.birthday.getFullYear();
+
   return (
     <div className='p-4'>
       <div className='flex gap-4'>
@@ -46,23 +38,7 @@ export default async function DogPage({
             <Camera />
           </div>
         </div>
-        <Card className='w-[350px] flex flex-col justify-between'>
-          <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              {dog.name}
-              {dog.gender === 'MALE' ? <Mars /> : <Venus />}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Age: {dogAge}</p>
-            <p>Weight: {dog.weight} kg</p>
-          </CardContent>
-          <CardFooter>
-            <Link className='w-full' href={`/edit-dog/${id}`}>
-              <Button className='w-full'>Edit</Button>
-            </Link>
-          </CardFooter>
-        </Card>
+        <DogEditableCard dog={dog} />
       </div>
       <div className='pt-4'>
         <Card>

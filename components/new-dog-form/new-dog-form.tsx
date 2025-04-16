@@ -13,21 +13,16 @@ import {
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { createDogAction } from '@/lib/createDogAction';
+import { updateDogAction } from '@/lib/updateDogAction';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns';
-import {
-  Calendar as CalendarIcon,
-  Camera as CameraIcon,
-  Check,
-  ChevronsUpDown,
-} from 'lucide-react';
+import { Dog } from '@prisma/client';
+import { Camera as CameraIcon, Check, ChevronsUpDown } from 'lucide-react';
+import { redirect } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Calendar } from '../ui/calendar';
 import { Card } from '../ui/card';
-import { redirect } from 'next/navigation';
 import {
   Command,
   CommandEmpty,
@@ -38,8 +33,6 @@ import {
 } from '../ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Textarea } from '../ui/textarea';
-import { Dog } from '@prisma/client';
-import { updateDogAction } from '@/lib/updateDogAction';
 
 const dogBreeds = [
   { label: 'Owczarek niemiecki', value: 'Owczarek niemiecki' },
@@ -54,56 +47,80 @@ const dogBreeds = [
   { label: 'Chihuahua', value: 'Chihuahua' },
 ] as const;
 
-const formSchema = z.object({
-  activityLevel: z.string({
-    required_error: 'You need to select an activity type.',
-  }),
-  basicFood: z.string().min(2, {
-    message: 'Basic food must be at least 3 characters.',
-  }),
-  birthday: z.date({
-    required_error: 'A date of birth is required.',
-  }),
-  breed: z.string({
-    required_error: 'Breed must be selected.',
-  }),
-  castrated: z.enum(['YES', 'NO'], {
-    required_error: 'You need to select.',
-  }),
-  castratedYear: z.string(),
-  favoriteActivity: z.string().min(2, {
-    message: 'Favorite activity must be at least 2 characters.',
-  }),
-  favoritePlace: z.string(),
-  favoriteSnack: z.string(),
-  favoriteToy: z.string(),
-  gender: z.enum(['MALE', 'FEMALE'], {
-    required_error: 'You need to select gender.',
-  }),
-  healthProblems: z.string({
-    message: 'Weight is required.',
-  }),
-  name: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
-  }),
-  origin: z.enum(['BREEDING', 'SHELTER', 'OTHER'], {
-    required_error: 'You need to select an origin type.',
-  }),
-  originOther: z.string().optional(),
-  others: z.string().min(5, {
-    message: 'Write something more.',
-  }),
-  relationToFood: z.string({
-    message: 'Favorite place must be at least 2 characters.',
-  }),
-  weight: z.string({
-    message: 'Weight is required.',
-  }),
-});
-// .refine((data) => data.origin === 'other' && !data.originOther, {
-//   message: 'Origin other is required when origin is other',
-//   path: ['originOther'],
-// });
+const formSchema = z
+  .object({
+    activityLevel: z.string({
+      required_error: 'You need to select an activity type.',
+    }),
+    basicFood: z.string().min(2, {
+      message: 'Basic food must be at least 3 characters.',
+    }),
+    birthday: z
+      .date({
+        required_error: 'A date of birth is required.',
+      })
+      .refine(
+        (date) => {
+          const parsedDate = new Date(date);
+          return !isNaN(parsedDate.getTime()) && parsedDate < new Date();
+        },
+        {
+          message:
+            'Date of birth must be a valid date and cannot be in the future.',
+        }
+      ),
+    breed: z.string({
+      required_error: 'Breed must be selected.',
+    }),
+    castrated: z.enum(['YES', 'NO'], {
+      required_error: 'You need to select.',
+    }),
+    castratedYear: z.string(),
+    favoriteActivity: z.string().min(2, {
+      message: 'Favorite activity must be at least 2 characters.',
+    }),
+    favoriteSnack: z.string(),
+    favoriteToy: z.string(),
+    gender: z.enum(['MALE', 'FEMALE'], {
+      required_error: 'You need to select gender.',
+    }),
+    healthProblems: z.enum(['YES', 'NO'], {
+      required_error: 'You need to select.',
+    }),
+    healthProblemsDetails: z.string(),
+    name: z.string().min(2, {
+      message: 'Username must be at least 2 characters.',
+    }),
+    origin: z.enum(['BREEDING', 'SHELTER', 'OTHER'], {
+      required_error: 'You need to select an origin type.',
+    }),
+    originOther: z.string(),
+    others: z.string().min(5, {
+      message: 'Write something more.',
+    }),
+    relationToFood: z.string({
+      message: 'Favorite place must be at least 2 characters.',
+    }),
+    weight: z.string({
+      message: 'Weight is required.',
+    }),
+  })
+  .refine((data) => data.origin !== 'OTHER' && !data.originOther, {
+    message: 'This field is required when origin is OTHER.',
+    path: ['originOther'],
+  })
+  .refine((data) => data.castrated !== 'YES' && !data.castratedYear, {
+    message: 'This field is required when castrated is YES.',
+    path: ['originOther'],
+  })
+  .refine(
+    (data) => data.healthProblems !== 'YES' && !data.healthProblemsDetails,
+    {
+      message:
+        'Health problems details are required when healthProblems is YES.',
+      path: ['healthProblemsDetails'],
+    }
+  );
 
 type NewDogFormProps = {
   mode: 'create';
@@ -134,13 +151,12 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
       castratedYear:
         isEditMode && dog && dog.castratedYear ? dog.castratedYear : '',
       favoriteActivity: isEditMode && dog ? dog.favoriteActivity : '',
-      favoritePlace:
-        isEditMode && dog && dog.favoritePlace ? dog.favoritePlace : '',
       favoriteSnack:
         isEditMode && dog && dog.favoriteSnack ? dog.favoriteSnack : '',
       favoriteToy: isEditMode && dog && dog.favoriteToy ? dog.favoriteToy : '',
       gender: isEditMode && dog ? dog.gender : 'FEMALE',
-      healthProblems: isEditMode && dog ? dog.healthProblems : '',
+      healthProblems: isEditMode && dog ? dog.healthProblems : 'NO',
+      healthProblemsDetails: isEditMode && dog ? dog.healthProblemsDetails : '',
       name: isEditMode && dog ? dog.name : '',
       origin: isEditMode && dog ? dog.origin : 'BREEDING',
       originOther: isEditMode && dog && dog.originOther ? dog.originOther : '',
@@ -157,23 +173,25 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
     event?: React.BaseSyntheticEvent
   ) {
     event?.preventDefault();
-    let result;
     if (mode === 'create') {
-      result = await createDogAction(values, userId);
+      await createDogAction(values, userId);
       redirect(`/dogs`);
     }
     if (mode === 'update' && !!dog) {
-      result = await updateDogAction(values, userId, dog.id);
+      await updateDogAction(values, userId, dog.id);
       redirect(`/dogs/${dog.id}`);
     }
-    console.log('result:', result);
   }
+
+  const healthProblemsValue = form.watch('healthProblems');
+  const castratedValue = form.watch('castrated');
+  const originValue = form.watch('origin');
 
   return (
     <Form {...form}>
       <form
         // action={createDog}
-        className='flex flex-col justify-center w-[600px] gap-4'
+        className='flex flex-col justify-center w-[600px] gap-6'
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <Card className='w-full h-[300px] flex items-start justify-end'>
@@ -242,37 +260,9 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Date of birth</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={'outline'}
-                      className={cn(
-                        'w-full pl-3 text-left font-normal',
-                        !field.value && 'text-muted-foreground'
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, 'PPP')
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className='w-auto p-0' align='start'>
-                  <Calendar
-                    mode='single'
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date('1900-01-01')
-                    }
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              <FormControl>
+                <Input type='date' placeholder='2020-01-01' {...field} />
+              </FormControl>
               <FormDescription>
                 Your date of birth is used to calculate your age.
               </FormDescription>
@@ -310,7 +300,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                   <Command>
                     <CommandInput placeholder='Search breed...' />
                     <CommandList>
-                      <CommandEmpty>No language found.</CommandEmpty>
+                      <CommandEmpty>No breeds found.</CommandEmpty>
                       <CommandGroup>
                         {dogBreeds.map((breed) => (
                           <CommandItem
@@ -362,19 +352,54 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
             <FormItem>
               <FormLabel>Health problems</FormLabel>
               <FormControl>
-                <Input
-                  placeholder='Epilepsja / zwyrodnienie stawów ...'
-                  {...field}
-                />
+                <RadioGroup
+                  className='flex flex-col space-y-1'
+                  defaultValue={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <FormItem className='flex items-center space-x-3 space-y-0'>
+                    <FormControl>
+                      <RadioGroupItem value='YES' />
+                    </FormControl>
+                    <FormLabel className='font-normal'>Yes</FormLabel>
+                  </FormItem>
+                  <FormItem className='flex items-center space-x-3 space-y-0'>
+                    <FormControl>
+                      <RadioGroupItem value='NO' />
+                    </FormControl>
+                    <FormLabel className='font-normal'>No</FormLabel>
+                  </FormItem>
+                </RadioGroup>
               </FormControl>
               <FormDescription>
-                This is your dog medical history (chronic diseases,
-                allergies,etc.)
+                Does your dog have any health problems? Yes / No
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+        {healthProblemsValue === 'YES' && (
+          <FormField
+            control={form.control}
+            name='healthProblemsDetails'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Health problems details</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='Epilepsja / zwyrodnienie stawów ...'
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  This is your dog medical history (chronic diseases,
+                  allergies,etc.)
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
           control={form.control}
           name='activityLevel'
@@ -454,22 +479,24 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
             </FormItem>
           )}
         />
-
-        <FormField
-          control={form.control}
-          name='castratedYear'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Age of castrated?</FormLabel>
-              <FormControl>
-                <Input placeholder='Yes / No' {...field} />
-              </FormControl>
-              <FormDescription>Was he castrated? Yes / No</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* TODO_DD: type=radio Schronisko, hodowla, inne - jesli inne to jakie */}
+        {castratedValue === 'YES' && (
+          <FormField
+            control={form.control}
+            name='castratedYear'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Age of castrated?</FormLabel>
+                <FormControl>
+                  <Input placeholder='2024' {...field} />
+                </FormControl>
+                <FormDescription>
+                  W jakim wieku został wykastrowany?
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
           control={form.control}
           name='origin'
@@ -507,23 +534,25 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name='originOther'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Skad jest?</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder='Z hodowli / schroniska / od sąsiada'
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>Skąd masz psa</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {originValue === 'OTHER' && (
+          <FormField
+            control={form.control}
+            name='originOther'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Skad jest?</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='Z hodowli / schroniska / od sąsiada'
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>Skąd masz psa</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
           control={form.control}
           name='basicFood'
@@ -629,22 +658,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
         />
         <FormField
           control={form.control}
-          name='favoritePlace'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Favorite place</FormLabel>
-              <FormControl>
-                <Input placeholder='Park' {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your dog favorite place.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name='others'
           render={({ field }) => (
             <FormItem className='col-span-2'>
@@ -660,7 +673,9 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
             </FormItem>
           )}
         />
-        <Button type='submit'>{isEditMode ? 'Save' : ' Submit'}</Button>
+        <Button type='submit' variant='outline'>
+          {isEditMode ? 'Save' : ' Submit'}
+        </Button>
       </form>
     </Form>
   );

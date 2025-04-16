@@ -14,31 +14,31 @@ datasource db {
 }
 
 model Dog {
-  id               String   @id @default(cuid())
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  activityLevel    String
-  basicFood        String
-  birthday         DateTime
-  breed            String
-  castrated        YesNo
-  castratedYear    String?
-  favoriteActivity String
-  favoritePlace    String?
-  favoriteSnack    String?
-  favoriteToy      String?
-  gender           Gender
-  healthProblems   String
-  name             String
-  origin           Origin
-  originOther      String?
-  others           String
-  photo            Bytes?
-  relationToFood   String
-  slug             String   @unique
-  user             User     @relation(fields: [userId], references: [id])
-  userId           String
-  weight           String
+  id                    String   @id @default(cuid())
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  activityLevel         String
+  basicFood             String
+  birthday              DateTime
+  breed                 String
+  castrated             YesNo
+  castratedYear         String?
+  favoriteActivity      String
+  favoriteSnack         String?
+  favoriteToy           String?
+  gender                Gender
+  healthProblems        YesNo
+  healthProblemsDetails String?
+  name                  String
+  origin                Origin
+  originOther           String?
+  others                String
+  photo                 Bytes?
+  relationToFood        String
+  slug                  String   @unique
+  user                  User     @relation(fields: [userId], references: [id])
+  userId                String
+  weight                String
 }
 
 model User {
