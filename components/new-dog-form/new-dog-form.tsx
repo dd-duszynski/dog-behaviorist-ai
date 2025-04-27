@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -19,7 +20,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Dog } from '@prisma/client';
 import { Camera as CameraIcon, Check, ChevronsUpDown } from 'lucide-react';
 import { redirect } from 'next/navigation';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Card } from '../ui/card';
@@ -33,22 +33,23 @@ import {
 } from '../ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Textarea } from '../ui/textarea';
-
-const dogBreeds = [
-  { label: 'Owczarek niemiecki', value: 'Owczarek niemiecki' },
-  { label: 'Buldog angielski', value: 'Buldog angielski' },
-  { label: 'Labrador retriever', value: 'Labrador retriever' },
-  { label: 'Golden retriever', value: 'Golden retriever' },
-  { label: 'Buldog francuski', value: 'Buldog francuski' },
-  { label: 'Husky syberyjski', value: 'Husky syberyjski' },
-  { label: 'Beagle', value: 'Beagle' },
-  { label: 'Alaskan malamute', value: 'Alaskan malamute' },
-  { label: 'Pudel duży', value: 'Pudel duży' },
-  { label: 'Chihuahua', value: 'Chihuahua' },
-] as const;
+import { dogBreeds } from './dog-breeds';
 
 const formSchema = z
   .object({
+    photo: z
+      .instanceof(File)
+      .optional()
+      .refine((file) => !file || file.size <= 3 * 1024 * 1024, {
+        message: 'File size must be less than 3MB.',
+      })
+      .transform(async (file) => {
+        console.log('file:', file);
+        if (!file) return;
+        const arrayBuffer = await file.arrayBuffer();
+        console.log('arrayBuffer:', arrayBuffer);
+        return new Uint8Array(arrayBuffer); // Konwertuj na Uint8Array
+      }),
     activityLevel: z.string({
       required_error: 'You need to select an activity type.',
     }),
@@ -56,7 +57,7 @@ const formSchema = z
       message: 'Basic food must be at least 3 characters.',
     }),
     birthday: z
-      .date({
+      .string({
         required_error: 'A date of birth is required.',
       })
       .refine(
@@ -68,14 +69,15 @@ const formSchema = z
           message:
             'Date of birth must be a valid date and cannot be in the future.',
         }
-      ),
+      )
+      .transform((date) => new Date(date)),
     breed: z.string({
       required_error: 'Breed must be selected.',
     }),
+    breedOther: z.string(),
     castrated: z.enum(['YES', 'NO'], {
       required_error: 'You need to select.',
     }),
-    castratedYear: z.string(),
     favoriteActivity: z.string().min(2, {
       message: 'Favorite activity must be at least 2 characters.',
     }),
@@ -109,9 +111,9 @@ const formSchema = z
     message: 'This field is required when origin is OTHER.',
     path: ['originOther'],
   })
-  .refine((data) => data.castrated !== 'YES' && !data.castratedYear, {
-    message: 'This field is required when castrated is YES.',
-    path: ['originOther'],
+  .refine((data) => data.breed !== 'OTHER' && !data.breedOther, {
+    message: 'This field is required when origin is OTHER.',
+    path: ['breedOther'],
   })
   .refine(
     (data) => data.healthProblems !== 'YES' && !data.healthProblemsDetails,
@@ -135,8 +137,6 @@ type EditDogFormProps = {
 
 export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
   const { mode, userId } = props;
-  const [photo, setPhoto] = useState<File | null>(null);
-
   const isEditMode = mode === 'update' ? true : false;
   const dog = 'dog' in props ? props.dog : null;
 
@@ -145,18 +145,19 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
     defaultValues: {
       activityLevel: isEditMode && dog ? dog.activityLevel : '1',
       basicFood: isEditMode && dog ? dog.basicFood : '',
-      birthday: isEditMode && dog ? dog.birthday : new Date(),
+      birthday: isEditMode && dog ? dog.birthday : undefined,
       breed: isEditMode && dog ? dog.breed : '',
+      breedOther: isEditMode && dog ? dog.breedOther ?? undefined : undefined,
       castrated: isEditMode && dog ? dog.castrated : 'NO',
-      castratedYear:
-        isEditMode && dog && dog.castratedYear ? dog.castratedYear : '',
+      photo: isEditMode && dog ? dog.photo : undefined,
       favoriteActivity: isEditMode && dog ? dog.favoriteActivity : '',
       favoriteSnack:
         isEditMode && dog && dog.favoriteSnack ? dog.favoriteSnack : '',
       favoriteToy: isEditMode && dog && dog.favoriteToy ? dog.favoriteToy : '',
       gender: isEditMode && dog ? dog.gender : 'FEMALE',
       healthProblems: isEditMode && dog ? dog.healthProblems : 'NO',
-      healthProblemsDetails: isEditMode && dog ? dog.healthProblemsDetails : '',
+      healthProblemsDetails:
+        isEditMode && dog ? dog.healthProblemsDetails ?? undefined : undefined,
       name: isEditMode && dog ? dog.name : '',
       origin: isEditMode && dog ? dog.origin : 'BREEDING',
       originOther: isEditMode && dog && dog.originOther ? dog.originOther : '',
@@ -166,13 +167,8 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
     },
   });
 
-  /* TODO_DD:  */
-  // https://www.youtube.com/watch?v=dDpZfOQBMaU&ab_channel=leerob
-  async function onSubmit(
-    values: z.infer<typeof formSchema>,
-    event?: React.BaseSyntheticEvent
-  ) {
-    event?.preventDefault();
+  const onSubmitAction = async (values: z.infer<typeof formSchema>) => {
+    console.log('values onSubmit:', values);
     if (mode === 'create') {
       await createDogAction(values, userId);
       redirect(`/dogs`);
@@ -181,34 +177,70 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
       await updateDogAction(values, userId, dog.id);
       redirect(`/dogs/${dog.id}`);
     }
-  }
+  };
 
+  /* TODO_DD:  */
+  // https://www.youtube.com/watch?v=dDpZfOQBMaU&ab_channel=leerob
+
+  const breedValue = form.watch('breed');
   const healthProblemsValue = form.watch('healthProblems');
-  const castratedValue = form.watch('castrated');
   const originValue = form.watch('origin');
+  const photoValue = form.watch('photo');
 
   return (
     <Form {...form}>
       <form
         // action={createDog}
         className='flex flex-col justify-center w-[600px] gap-6'
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={() => {
+          const values = form.getValues();
+          console.log('form:', form);
+          console.log('values form:', values);
+          form.handleSubmit(onSubmitAction);
+        }}
       >
-        <Card className='w-full h-[300px] flex items-start justify-end'>
-          <Button variant='outline' className='m-2 relative' type='button'>
-            <CameraIcon className='ml-auto h-4 w-4 opacity-50' />
-            <input
-              accept='image/*'
-              className='absolute inset-0 opacity-0 cursor-pointer'
-              type='file'
-              onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  setPhoto(e.target.files[0]);
-                }
-              }}
-            />
-          </Button>
-        </Card>
+        <FormField
+          control={form.control}
+          name='photo'
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Card className='w-full h-[300px] flex items-start justify-end relative'>
+                  {photoValue && (
+                    <Image
+                      src={URL.createObjectURL(new Blob([photoValue]))}
+                      className='absolute top-0 left-0 object-cover w-full h-full rounded-xl'
+                      alt={'dog photo'}
+                      width={300}
+                      height={300}
+                    />
+                  )}
+                  <Button
+                    variant='outline'
+                    className='m-2 relative'
+                    type='button'
+                  >
+                    <CameraIcon className='ml-auto h-4 w-4 opacity-50 top-0 right-0' />
+                    <Input
+                      accept='image/*'
+                      className='absolute inset-0 opacity-0 cursor-pointer'
+                      type='file'
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          field.onChange(e.target.files[0]); // Update form state
+                        }
+                      }}
+                    />
+                  </Button>
+                </Card>
+              </FormControl>
+              <FormDescription>
+                Upload a photo of your dog (max 3MB).
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name='name'
@@ -261,7 +293,18 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
             <FormItem>
               <FormLabel>Date of birth</FormLabel>
               <FormControl>
-                <Input type='date' placeholder='2020-01-01' {...field} />
+                <Input
+                  type='date'
+                  {...field}
+                  value={
+                    field.value
+                      ? typeof field.value === 'string'
+                        ? field.value // Jeśli wartość jest stringiem, użyj jej bez zmian
+                        : field.value.toISOString().split('T')[0] // Jeśli jest Date, sformatuj
+                      : ''
+                  }
+                  onChange={(e) => field.onChange(e.target.value)} // Ustaw wartość jako string
+                />
               </FormControl>
               <FormDescription>
                 Your date of birth is used to calculate your age.
@@ -270,67 +313,89 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
             </FormItem>
           )}
         />
-        {/* TODO_DD: Combobox DogPicker */}
-        <FormField
-          control={form.control}
-          name='breed'
-          render={({ field }) => (
-            <FormItem className='flex flex-col'>
-              <FormLabel>Breed</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
+        <div className='grid grid-cols-2 gap-4'>
+          <FormField
+            control={form.control}
+            name='breed'
+            render={({ field }) => (
+              <FormItem className='flex flex-col'>
+                <FormLabel>Breed</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant='outline'
+                        role='combobox'
+                        className={cn(
+                          'w-full justify-between',
+                          !field.value && 'text-muted-foreground'
+                        )}
+                      >
+                        {field.value
+                          ? dogBreeds.find(
+                              (breed) => breed.value === field.value
+                            )?.label
+                          : 'Select breed'}
+                        <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-[300px] p-0'>
+                    <Command>
+                      <CommandInput placeholder='Search breed...' />
+                      <CommandList>
+                        <CommandEmpty>No breeds found.</CommandEmpty>
+                        <CommandGroup>
+                          {dogBreeds.map((breed) => (
+                            <CommandItem
+                              key={breed.value}
+                              value={breed.label}
+                              onSelect={() => {
+                                form.setValue('breed', breed.value);
+                              }}
+                            >
+                              {breed.label}
+                              <Check
+                                className={cn(
+                                  'ml-auto',
+                                  breed.value === field.value
+                                    ? 'opacity-100'
+                                    : 'opacity-0'
+                                )}
+                              />
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormDescription>This is your dog breed.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {breedValue === 'OTHER' && (
+            <FormField
+              control={form.control}
+              name='breedOther'
+              render={({ field }) => (
+                <FormItem>
+                  {/* <FormLabel>Other breed name</FormLabel> */}
                   <FormControl>
-                    <Button
-                      variant='outline'
-                      role='combobox'
-                      className={cn(
-                        'w-[200px] justify-between',
-                        !field.value && 'text-muted-foreground'
-                      )}
-                    >
-                      {field.value
-                        ? dogBreeds.find((breed) => breed.value === field.value)
-                            ?.label
-                        : 'Select breed'}
-                      <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-                    </Button>
+                    <Input
+                      placeholder='Other breed'
+                      {...field}
+                      className='mt-6'
+                    />
                   </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className='w-[200px] p-0'>
-                  <Command>
-                    <CommandInput placeholder='Search breed...' />
-                    <CommandList>
-                      <CommandEmpty>No breeds found.</CommandEmpty>
-                      <CommandGroup>
-                        {dogBreeds.map((breed) => (
-                          <CommandItem
-                            value={breed.label}
-                            key={breed.value}
-                            onSelect={() => {
-                              form.setValue('breed', breed.value);
-                            }}
-                          >
-                            {breed.label}
-                            <Check
-                              className={cn(
-                                'ml-auto',
-                                breed.value === field.value
-                                  ? 'opacity-100'
-                                  : 'opacity-0'
-                              )}
-                            />
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormDescription>This is your dog breed.</FormDescription>
-              <FormMessage />
-            </FormItem>
+                  {/* <FormDescription>This is your dog breed.</FormDescription> */}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        />
+        </div>
         <FormField
           control={form.control}
           name='weight'
@@ -479,24 +544,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
             </FormItem>
           )}
         />
-        {castratedValue === 'YES' && (
-          <FormField
-            control={form.control}
-            name='castratedYear'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Age of castrated?</FormLabel>
-                <FormControl>
-                  <Input placeholder='2024' {...field} />
-                </FormControl>
-                <FormDescription>
-                  W jakim wieku został wykastrowany?
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
         <FormField
           control={form.control}
           name='origin'

@@ -12,10 +12,9 @@ export async function updateDogAction(
     const basicFood = formData.basicFood;
     const birthday = formData.birthday;
     const breed = formData.breed;
+    const breedOther = formData.breedOther;
     const castrated = formData.castrated;
-    const castratedYear = formData.castratedYear;
     const favoriteActivity = formData.favoriteActivity;
-    const favoritePlace = formData.favoritePlace;
     const favoriteSnack = formData.favoriteSnack;
     const favoriteToy = formData.favoriteToy;
     const gender = formData.gender;
@@ -24,6 +23,7 @@ export async function updateDogAction(
     const origin = formData.origin;
     const originOther = formData.originOther;
     const others = formData.others;
+    const photo = formData.photo || null;
     const relationToFood = formData.relationToFood;
     const slug = createSlug(name);
     const weight = formData.weight;
@@ -37,10 +37,9 @@ export async function updateDogAction(
         basicFood,
         birthday,
         breed,
+        breedOther,
         castrated,
-        castratedYear: castrated === 'YES' ? castratedYear : '',
         favoriteActivity,
-        favoritePlace,
         favoriteSnack,
         favoriteToy,
         gender,
@@ -49,6 +48,7 @@ export async function updateDogAction(
         origin,
         originOther,
         others,
+        photo,
         relationToFood,
         slug,
         userId, // Ensure the dog belongs to the correct user

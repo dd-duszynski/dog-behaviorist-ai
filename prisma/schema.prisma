@@ -21,8 +21,8 @@ model Dog {
   basicFood             String
   birthday              DateTime
   breed                 String
+  breedOther            String?
   castrated             YesNo
-  castratedYear         String?
   favoriteActivity      String
   favoriteSnack         String?
   favoriteToy           String?
