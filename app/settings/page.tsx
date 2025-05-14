@@ -1,3 +1,5 @@
-export default function SettingsPage() {
-  return <div>Settings - Delete profile</div>;
+import { strings } from '@/lib/strings/pl';
+
+export default async function SettingsPage() {
+  return <div>{strings.app_sidebar.settings}</div>;
 }

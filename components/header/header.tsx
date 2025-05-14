@@ -8,6 +8,7 @@ import {
   SignedOut,
   UserButton,
 } from '@clerk/nextjs';
+import { strings } from '@/lib/strings/pl';
 
 export function Header() {
   return (
@@ -15,13 +16,13 @@ export function Header() {
       <SidebarTrigger />
       <div className='flex justify-start items-center gap-1'>
         <Link href='/' className='font-bold text-xl'>
-          AI Dog behaviorist
+          {strings.header.title}
         </Link>
         <Image
-          src='/logo.webp'
-          alt='AI Dog behaviorist'
-          width={60}
+          alt={strings.header.title}
           height={60}
+          src='/logo.webp'
+          width={60}
         />
       </div>
       <SignedOut>

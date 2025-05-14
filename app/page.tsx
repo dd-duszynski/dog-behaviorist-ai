@@ -1,4 +1,6 @@
+import FirstDogPage from '@/components/first-dog-page/first-dog.page';
 import prisma from '@/lib/db';
+import { getDogs } from '@/lib/getDogs';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 
@@ -27,7 +29,10 @@ export default async function Page() {
       },
     });
   }
+  const dogs = await getDogs();
+  if (!dogs || dogs.length === 0) {
+    return <FirstDogPage />;
+  }
 
-  // Use `user` to render user details or create UI elements
   return <div>Welcome, {user && user.firstName}!</div>;
 }

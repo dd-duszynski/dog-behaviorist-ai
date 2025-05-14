@@ -1,28 +1,17 @@
 import { DogCard } from '@/components/dog-card/dog-card';
+import FirstDogPage from '@/components/first-dog-page/first-dog.page';
 import { Button } from '@/components/ui/button';
 import { getDogs } from '@/lib/getDogs';
+import { strings } from '@/lib/strings/pl';
 import Link from 'next/link';
 
 export default async function DogsPage() {
   const dogs = await getDogs();
+  if (!dogs || dogs.length === 0) {
+    return <FirstDogPage />;
+  }
   return (
     <div className='flex gap-3 p-3 flex-wrap'>
-      {/* <DogCard
-        name='Kira'
-        breed='Mongrel'
-        age={3}
-        weight={13}
-        image='/kira.jpg'
-        id='kira'
-      />
-      <DogCard
-        name='Diego'
-        breed='Mongrel'
-        age={1.5}
-        weight={19}
-        image='/diego.jpg'
-        id='diego'
-      /> */}
       {dogs.map((dog) => (
         <DogCard
           age={new Date().getFullYear() - dog.birthday.getFullYear()}
@@ -35,7 +24,7 @@ export default async function DogsPage() {
       ))}
       <Link href='/new-dog'>
         <Button variant='outline' className='absolute bottom-4 right-4 '>
-          Add new dog
+          {strings.dogs.add_dog}
         </Button>
       </Link>
     </div>

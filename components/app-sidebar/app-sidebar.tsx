@@ -11,8 +11,16 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-import { Calendar, Home, Inbox, Mars, Settings, Venus } from 'lucide-react';
+import {
+  Home,
+  PawPrint,
+  Mars,
+  Settings,
+  Venus,
+  Dog as DogIcon,
+} from 'lucide-react';
 import type { Dog } from '@prisma/client';
+import { strings } from '@/lib/strings/pl';
 
 const generateMenuItems = (dogs: Dog[]) => {
   const dogsItems = dogs.map((dog: Dog) => ({
@@ -23,23 +31,23 @@ const generateMenuItems = (dogs: Dog[]) => {
 
   return [
     {
-      title: 'Home',
+      title: strings.app_sidebar.home,
       url: '/',
       icon: Home,
     },
     {
-      title: 'Your dogs',
+      title: strings.app_sidebar.your_dogs,
       url: '/dogs',
-      icon: Inbox,
+      icon: DogIcon,
       items: dogsItems,
     },
     {
-      title: 'History',
+      title: strings.app_sidebar.history,
       url: '/history',
-      icon: Calendar,
+      icon: PawPrint,
     },
     {
-      title: 'Settings',
+      title: strings.app_sidebar.settings,
       url: '/settings',
       icon: Settings,
     },
@@ -57,7 +65,7 @@ export function AppSidebar({ dogs }: AppSidebarProps) {
     <Sidebar collapsible='icon'>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>AI Dog Behaviorist</SidebarGroupLabel>
+          <SidebarGroupLabel>{strings.header.title}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (

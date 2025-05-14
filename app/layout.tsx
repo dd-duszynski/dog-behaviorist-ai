@@ -32,13 +32,15 @@ export default async function RootLayout({
     <ClerkProvider>
       <html lang='en'>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
         >
           <SidebarProvider>
             <AppSidebar dogs={dogs} />
             <main className='w-full min-h-full relative'>
               <Header />
-              {children}
+              <div className='overflow-y-auto h-[calc(100vh-6rem)]'>
+                {children}
+              </div>
             </main>
           </SidebarProvider>
         </body>
