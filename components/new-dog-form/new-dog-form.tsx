@@ -37,19 +37,17 @@ import { dogBreeds } from './dog-breeds';
 
 const formSchema = z
   .object({
-    photo: z
-      .instanceof(File)
-      .optional()
-      .refine((file) => !file || file.size <= 3 * 1024 * 1024, {
-        message: 'File size must be less than 3MB.',
-      })
-      .transform(async (file) => {
-        console.log('file:', file);
-        if (!file) return;
-        const arrayBuffer = await file.arrayBuffer();
-        console.log('arrayBuffer:', arrayBuffer);
-        return new Uint8Array(arrayBuffer); // Konwertuj na Uint8Array
-      }),
+    photo: z.any().optional(),
+    // .refine((file) => !file || file.size <= 3 * 1024 * 1024, {
+    //   message: 'File size must be less than 3MB.',
+    // }),
+    // .transform(async (file) => {
+    //   console.log('file:', file);
+    //   if (!file) return;
+    //   const arrayBuffer = await file.arrayBuffer();
+    //   console.log('arrayBuffer:', arrayBuffer);
+    //   return new Uint8Array(arrayBuffer); // Konwertuj na Uint8Array
+    // }),
     activityLevel: z.string({
       required_error: 'You need to select an activity type.',
     }),
@@ -72,9 +70,9 @@ const formSchema = z
       )
       .transform((date) => new Date(date)),
     breed: z.string({
-      required_error: 'Breed must be selected.',
+      message: 'Breed must be selected.',
     }),
-    breedOther: z.string(),
+    breedOther: z.string().optional(),
     castrated: z.enum(['YES', 'NO'], {
       required_error: 'You need to select.',
     }),
@@ -89,17 +87,15 @@ const formSchema = z
     healthProblems: z.enum(['YES', 'NO'], {
       required_error: 'You need to select.',
     }),
-    healthProblemsDetails: z.string(),
+    healthProblemsDetails: z.string().optional(),
     name: z.string().min(2, {
       message: 'Username must be at least 2 characters.',
     }),
     origin: z.enum(['BREEDING', 'SHELTER', 'OTHER'], {
       required_error: 'You need to select an origin type.',
     }),
-    originOther: z.string(),
-    others: z.string().min(5, {
-      message: 'Write something more.',
-    }),
+    originOther: z.string().optional(),
+    others: z.string().optional(),
     relationToFood: z.string({
       message: 'Favorite place must be at least 2 characters.',
     }),
@@ -107,16 +103,28 @@ const formSchema = z
       message: 'Weight is required.',
     }),
   })
-  .refine((data) => data.origin !== 'OTHER' && !data.originOther, {
-    message: 'This field is required when origin is OTHER.',
-    path: ['originOther'],
-  })
-  .refine((data) => data.breed !== 'OTHER' && !data.breedOther, {
-    message: 'This field is required when origin is OTHER.',
-    path: ['breedOther'],
-  })
   .refine(
-    (data) => data.healthProblems !== 'YES' && !data.healthProblemsDetails,
+    (data) =>
+      (data.origin !== 'OTHER' && !data.originOther) ||
+      (data.origin === 'OTHER' && !!data.originOther),
+    {
+      message: 'This field is required when origin is OTHER.',
+      path: ['originOther'],
+    }
+  )
+  .refine(
+    (data) =>
+      (data.breed !== 'OTHER' && !data.breedOther) ||
+      (data.breed === 'OTHER' && !!data.breedOther),
+    {
+      message: 'This field is required when breed is OTHER.',
+      path: ['breedOther'],
+    }
+  )
+  .refine(
+    (data) =>
+      (data.healthProblems !== 'YES' && !data.healthProblemsDetails) ||
+      (data.healthProblems === 'YES' && !!data.healthProblemsDetails),
     {
       message:
         'Health problems details are required when healthProblems is YES.',
@@ -146,7 +154,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
       activityLevel: isEditMode && dog ? dog.activityLevel : '1',
       basicFood: isEditMode && dog ? dog.basicFood : '',
       birthday: isEditMode && dog ? dog.birthday : undefined,
-      breed: isEditMode && dog ? dog.breed : '',
+      breed: isEditMode && dog ? dog.breed : undefined,
       breedOther: isEditMode && dog ? dog.breedOther ?? undefined : undefined,
       castrated: isEditMode && dog ? dog.castrated : 'NO',
       photo: isEditMode && dog ? dog.photo : undefined,
@@ -160,15 +168,20 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
         isEditMode && dog ? dog.healthProblemsDetails ?? undefined : undefined,
       name: isEditMode && dog ? dog.name : '',
       origin: isEditMode && dog ? dog.origin : 'BREEDING',
-      originOther: isEditMode && dog && dog.originOther ? dog.originOther : '',
+      originOther:
+        isEditMode && dog && dog.originOther ? dog.originOther : undefined,
       others: isEditMode && dog ? dog.others : '',
       relationToFood: isEditMode && dog ? dog.relationToFood : '1',
-      weight: isEditMode && dog ? dog.weight : '0',
+      weight: isEditMode && dog ? dog.weight : undefined,
     },
   });
 
-  const onSubmitAction = async (values: z.infer<typeof formSchema>) => {
-    console.log('values onSubmit:', values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    // if (values.photo) {
+    //   const arrayBuffer = await values.photo.arrayBuffer();
+    //   console.log('onSubmitAction file:', values.photo);
+    //   console.log('onSubmitAction arrayBuffer:', arrayBuffer);
+    // }
     if (mode === 'create') {
       await createDogAction(values, userId);
       redirect(`/dogs`);
@@ -177,7 +190,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
       await updateDogAction(values, userId, dog.id);
       redirect(`/dogs/${dog.id}`);
     }
-  };
+  }
 
   /* TODO_DD:  */
   // https://www.youtube.com/watch?v=dDpZfOQBMaU&ab_channel=leerob
@@ -190,14 +203,8 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
   return (
     <Form {...form}>
       <form
-        // action={createDog}
         className='flex flex-col justify-center w-[600px] gap-6'
-        onSubmit={() => {
-          const values = form.getValues();
-          console.log('form:', form);
-          console.log('values form:', values);
-          form.handleSubmit(onSubmitAction);
-        }}
+        // onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
           control={form.control}
@@ -720,7 +727,13 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
             </FormItem>
           )}
         />
-        <Button type='submit' variant='outline'>
+        <Button
+          type='submit'
+          variant='outline'
+          onClick={form.handleSubmit(onSubmit, (e) => {
+            console.log('e:', e);
+          })}
+        >
           {isEditMode ? 'Save' : ' Submit'}
         </Button>
       </form>

@@ -1,5 +1,4 @@
 'use server';
-import { createSlug } from '@/lib/create-slug';
 import prisma from '@/lib/db';
 
 // export async function createDog(formData: FormData) {
@@ -22,9 +21,7 @@ export async function createDogAction(formData: any, userId: string) {
     const others = formData.others;
     const photo = formData.photo || null;
     const relationToFood = formData.relationToFood;
-    const slug = createSlug(name);
     const weight = formData.weight;
-
     const result = await prisma.dog.create({
       data: {
         activityLevel,
@@ -44,7 +41,6 @@ export async function createDogAction(formData: any, userId: string) {
         others,
         photo,
         relationToFood,
-        slug,
         userId,
         weight,
       },

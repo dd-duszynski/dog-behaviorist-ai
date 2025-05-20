@@ -23,7 +23,7 @@ model Dog {
   breed                 String
   breedOther            String?
   castrated             YesNo
-  favoriteActivity      String
+  favoriteActivity      String?
   favoriteSnack         String?
   favoriteToy           String?
   gender                Gender
@@ -32,10 +32,9 @@ model Dog {
   name                  String
   origin                Origin
   originOther           String?
-  others                String
+  others                String?
   photo                 Bytes?
   relationToFood        String
-  slug                  String   @unique
   user                  User     @relation(fields: [userId], references: [id])
   userId                String
   weight                String

@@ -59,7 +59,6 @@ type AppSidebarProps = {
 };
 
 export function AppSidebar({ dogs }: AppSidebarProps) {
-  console.log('dogs:', dogs);
   const menuItems = generateMenuItems(dogs);
   return (
     <Sidebar collapsible='icon'>

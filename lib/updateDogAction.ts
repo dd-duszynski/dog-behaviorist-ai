@@ -1,5 +1,4 @@
 'use server';
-import { createSlug } from '@/lib/create-slug';
 import prisma from '@/lib/db';
 
 export async function updateDogAction(
@@ -25,7 +24,6 @@ export async function updateDogAction(
     const others = formData.others;
     const photo = formData.photo || null;
     const relationToFood = formData.relationToFood;
-    const slug = createSlug(name);
     const weight = formData.weight;
 
     const result = await prisma.dog.update({
@@ -50,7 +48,6 @@ export async function updateDogAction(
         others,
         photo,
         relationToFood,
-        slug,
         userId, // Ensure the dog belongs to the correct user
         weight,
       },
