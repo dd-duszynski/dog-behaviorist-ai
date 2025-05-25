@@ -9,6 +9,7 @@ import {
 import { Button } from '../ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
+import { strings } from '@/lib/strings/pl';
 
 type DogCardProps = {
   age: number;
@@ -31,17 +32,17 @@ export function DogCard({
     <Card className='w-[350px] flex flex-col justify-between'>
       <CardHeader>
         <CardTitle>{name}</CardTitle>
-        <CardDescription>Breed: {breed}</CardDescription>
+        <CardDescription>{`${strings.new_dog_form.breed_label}: ${breed}`}</CardDescription>
       </CardHeader>
       <CardContent>
         <Image src={image} alt={name} width={300} height={300} />
-        <p>Age: {age}</p>
-        <p>weight: {weight} kg</p>
+        <p>{`${strings.general.age}: ${age}`}</p>
+        <p>{`${strings.general.weight}: ${weight} ${strings.general.kg}`}</p>
       </CardContent>
       <CardFooter>
         <Link className='w-full' href={`/dogs/${id}`}>
           <Button className='w-full' variant='outline'>
-            More info
+            {strings.dogs.more_info}
           </Button>
         </Link>
       </CardFooter>

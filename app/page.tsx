@@ -2,6 +2,7 @@ import FirstDogPage from '@/components/first-dog-page/first-dog.page';
 import { askAI } from '@/lib/ai/analyze';
 import prisma from '@/lib/db';
 import { getDogs } from '@/lib/getDogs';
+import { strings } from '@/lib/strings/pl';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 
@@ -10,7 +11,7 @@ export default async function Page() {
   const { userId } = await auth();
   // Protect the route by checking if the user is signed in
   if (!userId) {
-    return <div>Sign in to view this page</div>;
+    return <div>{strings.home.sign_in_to_view_this_page}</div>;
   }
   // Get the Backend API User object when you need access to the user's information
   const user = await currentUser();
@@ -41,7 +42,9 @@ export default async function Page() {
   console.log('res:', res);
   return (
     <div>
-      Welcome, {user && user.firstName}!<p>{res && res.content.toString()}</p>
+      <p>{`${strings.home.welcome}, ${user && user.firstName}!`}</p>
+      <p>{strings.home.get_started_description}</p>
+      <p>{res && res.content.toString()}</p>
     </div>
   );
 }

@@ -34,6 +34,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Textarea } from '../ui/textarea';
 import { dogBreeds } from './dog-breeds';
+import { strings } from '@/lib/strings/pl';
 
 const formSchema = z
   .object({
@@ -242,7 +243,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                 </Card>
               </FormControl>
               <FormDescription>
-                Upload a photo of your dog (max 3MB).
+                {strings.new_dog_form.upload_photo}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -253,11 +254,13 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           name='name'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>{strings.new_dog_form.name_label}</FormLabel>
               <FormControl>
                 <Input placeholder='shadcn' {...field} />
               </FormControl>
-              <FormDescription>This is your dog name.</FormDescription>
+              <FormDescription>
+                {strings.new_dog_form.name_description}
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -267,7 +270,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           name='gender'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Gender</FormLabel>
+              <FormLabel>{strings.new_dog_form.gender_label}</FormLabel>
               <FormControl>
                 <RadioGroup
                   className='flex flex-col space-y-1'
@@ -278,17 +281,23 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                     <FormControl>
                       <RadioGroupItem value='MALE' />
                     </FormControl>
-                    <FormLabel className='font-normal'>Male</FormLabel>
+                    <FormLabel className='font-normal'>
+                      {strings.new_dog_form.gender_male}
+                    </FormLabel>
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
                       <RadioGroupItem value='FEMALE' />
                     </FormControl>
-                    <FormLabel className='font-normal'>Female</FormLabel>
+                    <FormLabel className='font-normal'>
+                      {strings.new_dog_form.gender_female}
+                    </FormLabel>
                   </FormItem>
                 </RadioGroup>
               </FormControl>
-              <FormDescription>This is your dog gender</FormDescription>
+              <FormDescription>
+                {strings.new_dog_form.gender_description}
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -298,7 +307,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           name='birthday'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Date of birth</FormLabel>
+              <FormLabel>{strings.new_dog_form.birthday_label}</FormLabel>
               <FormControl>
                 <Input
                   type='date'
@@ -314,7 +323,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                 />
               </FormControl>
               <FormDescription>
-                Your date of birth is used to calculate your age.
+                {strings.new_dog_form.birthday_description}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -326,7 +335,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
             name='breed'
             render={({ field }) => (
               <FormItem className='flex flex-col'>
-                <FormLabel>Breed</FormLabel>
+                <FormLabel>{strings.new_dog_form.breed_label}</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -351,7 +360,9 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                     <Command>
                       <CommandInput placeholder='Search breed...' />
                       <CommandList>
-                        <CommandEmpty>No breeds found.</CommandEmpty>
+                        <CommandEmpty>
+                          {strings.new_dog_form.breed_empty_label}
+                        </CommandEmpty>
                         <CommandGroup>
                           {dogBreeds.map((breed) => (
                             <CommandItem
@@ -377,7 +388,9 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                     </Command>
                   </PopoverContent>
                 </Popover>
-                <FormDescription>This is your dog breed.</FormDescription>
+                <FormDescription>
+                  {strings.new_dog_form.breed_description}
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -408,11 +421,13 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           name='weight'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Weight</FormLabel>
+              <FormLabel>{strings.new_dog_form.weight_label}</FormLabel>
               <FormControl>
                 <Input type='number' placeholder='10' {...field} />
               </FormControl>
-              <FormDescription>`This is your dog weight (kg)`</FormDescription>
+              <FormDescription>
+                {strings.new_dog_form.weight_description}
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -422,7 +437,9 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           name='healthProblems'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Health problems</FormLabel>
+              <FormLabel>
+                {strings.new_dog_form.health_problems_label}
+              </FormLabel>
               <FormControl>
                 <RadioGroup
                   className='flex flex-col space-y-1'
@@ -433,18 +450,22 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                     <FormControl>
                       <RadioGroupItem value='YES' />
                     </FormControl>
-                    <FormLabel className='font-normal'>Yes</FormLabel>
+                    <FormLabel className='font-normal'>
+                      {strings.general.yes}
+                    </FormLabel>
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
                       <RadioGroupItem value='NO' />
                     </FormControl>
-                    <FormLabel className='font-normal'>No</FormLabel>
+                    <FormLabel className='font-normal'>
+                      {strings.general.no}
+                    </FormLabel>
                   </FormItem>
                 </RadioGroup>
               </FormControl>
               <FormDescription>
-                Does your dog have any health problems? Yes / No
+                {strings.new_dog_form.health_problems_description}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -456,7 +477,9 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
             name='healthProblemsDetails'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Health problems details</FormLabel>
+                <FormLabel>
+                  {strings.new_dog_form.health_problems_details_label}
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder='Epilepsja / zwyrodnienie stawów ...'
@@ -464,8 +487,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                   />
                 </FormControl>
                 <FormDescription>
-                  This is your dog medical history (chronic diseases,
-                  allergies,etc.)
+                  {strings.new_dog_form.health_problems_details_description}
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -477,7 +499,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           name='activityLevel'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Czas aktywnosci</FormLabel>
+              <FormLabel>{strings.new_dog_form.activity_level_label}</FormLabel>
               <FormControl>
                 <RadioGroup
                   className='flex flex-col space-y-1'
@@ -488,20 +510,24 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                     <FormControl>
                       <RadioGroupItem value='1' />
                     </FormControl>
-                    <FormLabel className='font-normal'>Do 1h</FormLabel>
+                    <FormLabel className='font-normal'>
+                      {strings.new_dog_form.activity_level_1}
+                    </FormLabel>
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
                       <RadioGroupItem value='2' />
                     </FormControl>
-                    <FormLabel className='font-normal'>1-2h</FormLabel>
+                    <FormLabel className='font-normal'>
+                      {strings.new_dog_form.activity_level_2}
+                    </FormLabel>
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
                       <RadioGroupItem value='3' />
                     </FormControl>
                     <FormLabel className='font-normal'>
-                      Więcej niż 2 godziny
+                      {strings.new_dog_form.activity_level_3}
                     </FormLabel>
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
@@ -509,12 +535,14 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                       <RadioGroupItem value='4' />
                     </FormControl>
                     <FormLabel className='font-normal'>
-                      Pies pracujący
+                      {strings.new_dog_form.activity_level_4}
                     </FormLabel>
                   </FormItem>
                 </RadioGroup>
               </FormControl>
-              <FormDescription>Czas aktywności ruchowej psa </FormDescription>
+              <FormDescription>
+                {strings.new_dog_form.activity_level_description}
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -525,7 +553,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           name='castrated'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Was he castrated?</FormLabel>
+              <FormLabel>{strings.new_dog_form.castrated_label}</FormLabel>
               <FormControl>
                 <RadioGroup
                   className='flex flex-col space-y-1'
@@ -536,17 +564,23 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                     <FormControl>
                       <RadioGroupItem value='YES' />
                     </FormControl>
-                    <FormLabel className='font-normal'>Yes</FormLabel>
+                    <FormLabel className='font-normal'>
+                      {strings.general.yes}
+                    </FormLabel>
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
                       <RadioGroupItem value='NO' />
                     </FormControl>
-                    <FormLabel className='font-normal'>No</FormLabel>
+                    <FormLabel className='font-normal'>
+                      {strings.general.no}
+                    </FormLabel>
                   </FormItem>
                 </RadioGroup>
               </FormControl>
-              <FormDescription>Was he castrated? Yes / No</FormDescription>
+              <FormDescription>
+                {strings.new_dog_form.castrated_description}
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -556,7 +590,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           name='origin'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Skad jest?</FormLabel>
+              <FormLabel>{strings.new_dog_form.origin_label}</FormLabel>
               <FormControl>
                 <RadioGroup
                   className='flex flex-col space-y-1'
@@ -567,23 +601,31 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                     <FormControl>
                       <RadioGroupItem value='BREEDING' />
                     </FormControl>
-                    <FormLabel className='font-normal'>Hodowla</FormLabel>
+                    <FormLabel className='font-normal'>
+                      {strings.new_dog_form.origin_breeding}
+                    </FormLabel>
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
                       <RadioGroupItem value='SHELTER' />
                     </FormControl>
-                    <FormLabel className='font-normal'>Schronisko</FormLabel>
+                    <FormLabel className='font-normal'>
+                      {strings.new_dog_form.origin_shelter}
+                    </FormLabel>
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
                       <RadioGroupItem value='OTHER' />
                     </FormControl>
-                    <FormLabel className='font-normal'>Inne</FormLabel>
+                    <FormLabel className='font-normal'>
+                      {strings.new_dog_form.origin_other}
+                    </FormLabel>
                   </FormItem>
                 </RadioGroup>
               </FormControl>
-              <FormDescription>Skąd masz psa</FormDescription>
+              <FormDescription>
+                {strings.new_dog_form.origin_description}
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -594,14 +636,16 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
             name='originOther'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Skad jest?</FormLabel>
+                <FormLabel>{strings.new_dog_form.origin_other_label}</FormLabel>
                 <FormControl>
                   <Input
                     placeholder='Z hodowli / schroniska / od sąsiada'
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>Skąd masz psa</FormDescription>
+                <FormDescription>
+                  {strings.new_dog_form.origin_description}
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -612,12 +656,12 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           name='basicFood'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Basic food</FormLabel>
+              <FormLabel>{strings.new_dog_form.basic_food_label}</FormLabel>
               <FormControl>
                 <Input placeholder='Meat' {...field} />
               </FormControl>
               <FormDescription>
-                Suchą karmę / Mokrą karmę / Jedzenie gotowane / Jedzenie surowe
+                {strings.new_dog_form.basic_food_description}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -629,7 +673,9 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           name='relationToFood'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Stosunek do jedzenia</FormLabel>
+              <FormLabel>
+                {strings.new_dog_form.relation_to_food_label}
+              </FormLabel>
               <FormControl>
                 <RadioGroup
                   className='flex flex-col space-y-1'
@@ -640,25 +686,30 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                     <FormControl>
                       <RadioGroupItem value='1' />
                     </FormControl>
-                    <FormLabel className='font-normal'>A picky eater</FormLabel>
+                    <FormLabel className='font-normal'>
+                      {strings.new_dog_form.relation_to_food_1}
+                    </FormLabel>
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
                       <RadioGroupItem value='2' />
                     </FormControl>
-                    <FormLabel className='font-normal'>Normal</FormLabel>
+                    <FormLabel className='font-normal'>
+                      {strings.new_dog_form.relation_to_food_2}
+                    </FormLabel>
                   </FormItem>
                   <FormItem className='flex items-center space-x-3 space-y-0'>
                     <FormControl>
                       <RadioGroupItem value='3' />
                     </FormControl>
-                    <FormLabel className='font-normal'>A glutton</FormLabel>
+                    <FormLabel className='font-normal'>
+                      {strings.new_dog_form.relation_to_food_3}
+                    </FormLabel>
                   </FormItem>
                 </RadioGroup>
               </FormControl>
               <FormDescription>
-                Czy jedzenie go silnie motywuje? Czy jest wybredny? Czy potrafi
-                zjeść wszystko?
+                {strings.new_dog_form.relation_to_food_description}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -669,12 +720,12 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           name='favoriteSnack'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Favorite snack</FormLabel>
+              <FormLabel>{strings.new_dog_form.favorite_snack_label}</FormLabel>
               <FormControl>
                 <Input placeholder='Meat' {...field} />
               </FormControl>
               <FormDescription>
-                This is your dog favorite snack.
+                {strings.new_dog_form.favorite_snack_description}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -685,11 +736,13 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           name='favoriteToy'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Favorite toy</FormLabel>
+              <FormLabel>{strings.new_dog_form.favorite_toy_label}</FormLabel>
               <FormControl>
                 <Input placeholder='Ball' {...field} />
               </FormControl>
-              <FormDescription>This is your dog favorite toy.</FormDescription>
+              <FormDescription>
+                {strings.new_dog_form.favorite_toy_description}
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -699,12 +752,14 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           name='favoriteActivity'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Favorite activity</FormLabel>
+              <FormLabel>
+                {strings.new_dog_form.favorite_activity_label}
+              </FormLabel>
               <FormControl>
                 <Input placeholder='Running' {...field} />
               </FormControl>
               <FormDescription>
-                This is your dog favorite activity.
+                {strings.new_dog_form.favorite_activity_description}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -715,27 +770,39 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           name='others'
           render={({ field }) => (
             <FormItem className='col-span-2'>
-              <FormLabel>Inne</FormLabel>
+              <FormLabel>{strings.general.other}</FormLabel>
               <FormControl>
                 <Textarea placeholder='My dog has ....' {...field} />
               </FormControl>
               <FormDescription>
-                Jeśli uważasza, że warto dodać coś jeszcze. Np. trudna
-                przeszłość, znaleziony w złym stanie.
+                {strings.new_dog_form.others_description}
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button
-          type='submit'
-          variant='outline'
-          onClick={form.handleSubmit(onSubmit, (e) => {
-            console.log('e:', e);
-          })}
-        >
-          {isEditMode ? 'Save' : ' Submit'}
-        </Button>
+        <div className='flex flex-row gap-4 justify-between'>
+          <Button
+            className='px-6'
+            type='submit'
+            variant='outline'
+            onClick={form.handleSubmit(onSubmit, (e) => {
+              console.log('e:', e);
+            })}
+          >
+            {isEditMode ? strings.general.save : strings.general.submit}
+          </Button>
+          {isEditMode && (
+            <Button
+              className='px-6'
+              type='button'
+              variant='secondary'
+              onClick={() => redirect(`/dogs`)}
+            >
+              {strings.general.cancel}
+            </Button>
+          )}
+        </div>
       </form>
     </Form>
   );

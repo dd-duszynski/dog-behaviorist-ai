@@ -7,5 +7,5 @@ export default async function HistoryPage() {
   if (!dogs || dogs.length === 0) {
     return <FirstDogPage />;
   }
-  return <div>{strings.app_sidebar.settings}</div>;
+  return <div>{strings.app_sidebar.history}</div>;
 }

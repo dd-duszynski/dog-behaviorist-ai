@@ -13,6 +13,7 @@ import { ButtonWithConfirmationDialog } from '../button-with-confirmation-dialog
 import { Button } from '../ui/button';
 import { removeDogAction } from '@/lib/removeDogAction';
 import { redirect } from 'next/navigation';
+import { strings } from '@/lib/strings/pl';
 
 type DogEditableCardProps = {
   dog: Dog;
@@ -30,18 +31,18 @@ export const DogEditableCard = ({ dog }: DogEditableCardProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p>Age: {dogAge}</p>
-          <p>Weight: {dog.weight} kg</p>
+          <p>{`${strings.general.age}: ${dogAge}`}</p>
+          <p>{`${strings.general.weight}: ${dogAge} ${strings.general.kg}`}</p>
         </CardContent>
         <CardFooter>
           <div className='flex flex-col gap-2 w-full'>
             <Link className='w-full' href={`/edit-dog/${dog.id}`}>
               <Button className='w-full' variant='outline'>
-                Edit
+                {strings.general.edit}
               </Button>
             </Link>
             <ButtonWithConfirmationDialog
-              description='Are you sure you want to remove this dog profile?'
+              description={strings.dogs.remove_description}
               onConfirm={async () => {
                 const result = await removeDogAction(dog.id);
                 console.log('result:', result);

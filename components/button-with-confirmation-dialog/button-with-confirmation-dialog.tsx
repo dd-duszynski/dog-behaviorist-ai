@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { strings } from '@/lib/strings/pl';
 
 type ButtonWithConfirmationDialogProps = {
   description?: string;
@@ -23,20 +24,20 @@ export const ButtonWithConfirmationDialog = ({
     <Dialog>
       <DialogTrigger asChild>
         <Button variant='destructive' className='w-full'>
-          Remove profile
+          {strings.dogs.remove_profile}
         </Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
-          <DialogTitle>Are you sure?</DialogTitle>
+          <DialogTitle>{strings.general.are_you_sure}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
         <DialogFooter>
           <Button variant='destructive' onClick={onConfirm}>
-            Confirm
+            {strings.general.confirm}
           </Button>
           <DialogClose>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant='outline'>{strings.general.cancel}</Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>
