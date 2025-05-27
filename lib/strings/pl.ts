@@ -49,6 +49,8 @@ export const strings = {
     remove_profile: 'Usuń profil',
     there_is_no_dog_to_edit: 'Nie ma psa do edytowania!',
     there_is_no_dog: 'Nie znaleziono psa',
+    new_thread: 'Rozpocznij nowy wątek',
+    recent_conversation: 'Lista poprzednich konwersacji',
   },
   first_dog_page: {
     paragraph1:

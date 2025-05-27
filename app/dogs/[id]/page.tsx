@@ -1,9 +1,9 @@
 import { DogEditableCard } from '@/components/dog-editable-card/dog-editable-card';
+import { DogPageTable } from '@/components/dog-history-table/dog-page-table';
 import { getDogById } from '@/lib/getDogById';
 import { strings } from '@/lib/strings/pl';
 import { Camera } from 'lucide-react';
 import Image from 'next/image';
-import { DogPageTable } from './dog-page-table';
 
 export default async function DogPage({
   params,
