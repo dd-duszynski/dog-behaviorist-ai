@@ -1,6 +1,7 @@
 import { DogEditableCard } from '@/components/dog-editable-card/dog-editable-card';
 import { DogPageTable } from '@/components/dog-history-table/dog-page-table';
 import { getDogById } from '@/lib/getDogById';
+import { getUserByClerkID } from '@/lib/getUserByClerkID';
 import { strings } from '@/lib/strings/pl';
 import { Camera } from 'lucide-react';
 import Image from 'next/image';
@@ -10,6 +11,8 @@ export default async function DogPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const user = await getUserByClerkID();
+  if (!user) return <div>{strings.general.unauthorized}</div>;
   const id = (await params).id;
   const dog = await getDogById(id);
   if (!dog) return <div>{strings.dogs.there_is_no_dog}</div>;
@@ -32,7 +35,7 @@ export default async function DogPage({
         <DogEditableCard dog={dog} />
       </div>
       <div className='pt-4'>
-        <DogPageTable dogId={dog.id} />
+        <DogPageTable userId={user.id} dogId={dog.id} />
       </div>
     </div>
   );

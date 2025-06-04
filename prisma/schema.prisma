@@ -14,7 +14,7 @@ datasource db {
 }
 
 model Dog {
-  id                    String         @id @default(cuid())
+  id                    String         @id @default(uuid())
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
   activityLevel         String
@@ -42,7 +42,7 @@ model Dog {
 }
 
 model User {
-  id            String         @id @default(cuid())
+  id            String         @id @default(uuid())
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   clerkId       String         @unique
@@ -53,7 +53,7 @@ model User {
 }
 
 model Conversation {
-  id        String    @id @default(cuid())
+  id        String    @id @default(uuid())
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   messages  Message[]
@@ -66,7 +66,7 @@ model Conversation {
 }
 
 model Message {
-  id             String       @id @default(cuid())
+  id             String       @id @default(uuid())
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   content        String

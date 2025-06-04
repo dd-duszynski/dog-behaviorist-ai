@@ -2,13 +2,16 @@
 import React from 'react';
 import { GenericTable } from '@/components/generic-table/generic-table';
 import { strings } from '@/lib/strings/pl';
+import { redirect } from 'next/navigation';
+import { createChatAction } from '@/lib/createChatAction';
 
 type DogPageTableProps = {
   dogId: string;
+  userId: string;
 };
 
 export const DogPageTable = (props: DogPageTableProps) => {
-  const { dogId } = props;
+  const { dogId, userId } = props;
   const tableColumns = [
     { key: 'question', label: 'Question' },
     { key: 'topic', label: 'Topic' },
@@ -30,9 +33,9 @@ export const DogPageTable = (props: DogPageTableProps) => {
       columns={tableColumns}
       rows={tableRows}
       footerButtonLabel={strings.dogs.new_thread}
-      onFooterButtonClick={() => {
-        console.log('onFooterButtonClick' + dogId);
-        /* obsługa kliknięcia */
+      onFooterButtonClick={async () => {
+        const result = await createChatAction(userId, dogId);
+        redirect('/chat/' + result.id);
       }}
     />
   );

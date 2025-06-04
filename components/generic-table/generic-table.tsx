@@ -33,8 +33,8 @@ type GenericTableProps = {
 export function GenericTable({
   caption,
   columns,
-  rows,
   footerButtonLabel,
+  rows,
   onFooterButtonClick,
 }: GenericTableProps) {
   return (
