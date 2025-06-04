@@ -9,6 +9,11 @@ export const getConversationByID = async (id: string) => {
       id: id,
       userId: user?.id,
     },
+    include: {
+      messages: {
+        orderBy: { createdAt: 'asc' },
+      },
+    },
   });
   return conversation;
 };

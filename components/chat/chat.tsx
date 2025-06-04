@@ -16,13 +16,20 @@ export async function Chat({ userId, id }: ChatProps) {
       isAi: true,
     },
   ];
+  const messages = [...initialMessages];
   if (conversation?.messages) {
-    initialMessages.push(...conversation.messages);
+    conversation.messages.forEach((message) => {
+      messages.push({
+        text: message.content,
+        isAi: message.isAIanswer,
+      });
+    });
   }
+
   return (
     <div className='flex flex-col justify-between w-full h-full'>
-      <ChatMessages userId={userId} id={id} messages={initialMessages} />
-      <ChatBottom userId={userId} id={id} />
+      <ChatMessages userId={userId} id={id} messages={messages} />
+      <ChatBottom userId={userId} id={id} conversation={conversation} />
     </div>
   );
 }
