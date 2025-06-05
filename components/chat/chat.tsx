@@ -1,4 +1,6 @@
 import { getConversationByID } from '@/lib/getConversationByID';
+import { getDogById } from '@/lib/getDogById';
+import { mapDogInfoIntoString } from '@/lib/mappers/mapDogInfoIntoString';
 import { ChatBottom } from './chat-bottom';
 import { ChatMessages } from './chat-messages';
 
@@ -9,7 +11,8 @@ interface ChatProps {
 
 export async function Chat({ userId, id }: ChatProps) {
   const conversation = await getConversationByID(id);
-  console.log('conversation:', conversation);
+  const dogInfo = !!conversation && (await getDogById(conversation.dogId));
+  const mappedDogInfo = dogInfo ? mapDogInfoIntoString(dogInfo) : '';
   const initialMessages = [
     {
       text: 'Hello, how can I help you today?',
@@ -29,7 +32,12 @@ export async function Chat({ userId, id }: ChatProps) {
   return (
     <div className='flex flex-col justify-between w-full h-full'>
       <ChatMessages userId={userId} id={id} messages={messages} />
-      <ChatBottom userId={userId} id={id} conversation={conversation} />
+      <ChatBottom
+        userId={userId}
+        id={id}
+        conversation={conversation}
+        mappedDogInfo={mappedDogInfo}
+      />
     </div>
   );
 }

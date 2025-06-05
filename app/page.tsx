@@ -1,5 +1,4 @@
 import FirstDogPage from '@/components/first-dog-page/first-dog.page';
-import { askAI } from '@/lib/ai/analyze';
 import prisma from '@/lib/db';
 import { getDogs } from '@/lib/getDogs';
 import { strings } from '@/lib/strings/pl';
@@ -36,15 +35,10 @@ export default async function Page() {
     return <FirstDogPage />;
   }
 
-  const res = await askAI(
-    'Mój pies jest bardzo pobudzony na widok innych psów.'
-  );
-  console.log('res:', res);
   return (
     <div>
       <p>{`${strings.home.welcome}, ${user && user.firstName}!`}</p>
       <p>{strings.home.get_started_description}</p>
-      <p>{res && res.content.toString()}</p>
     </div>
   );
 }

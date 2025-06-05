@@ -10,7 +10,6 @@ export default async function ChatPage({
   const user = await getUserByClerkID();
   if (!user) return <div>{strings.general.unauthorized}</div>;
   const id = (await params).id;
-  console.log('ChatPage id:', id);
   return (
     <div className='p-3 flex justify-center w-full'>
       <Chat userId={user.id} id={id} />

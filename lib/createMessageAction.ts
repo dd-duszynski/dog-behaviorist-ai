@@ -3,14 +3,15 @@ import prisma from '@/lib/db';
 
 export async function createMessageAction(
   conversationId: string,
-  content: string
+  content: string,
+  isAIanswer: boolean = false
 ) {
   try {
     const result = await prisma.message.create({
       data: {
         content,
         conversationId,
-        isAIanswer: false,
+        isAIanswer,
       },
     });
     console.log('createMessageAction result:', result);

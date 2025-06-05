@@ -1,5 +1,6 @@
 import { DogEditableCard } from '@/components/dog-editable-card/dog-editable-card';
 import { DogPageTable } from '@/components/dog-history-table/dog-page-table';
+import { getConversationsByDogId } from '@/lib/getConversationsByDogId';
 import { getDogById } from '@/lib/getDogById';
 import { getUserByClerkID } from '@/lib/getUserByClerkID';
 import { strings } from '@/lib/strings/pl';
@@ -17,6 +18,7 @@ export default async function DogPage({
   const dog = await getDogById(id);
   if (!dog) return <div>{strings.dogs.there_is_no_dog}</div>;
   const defaultDogImage = dog?.photo || '/dog-default.jpg';
+  const conversations = await getConversationsByDogId(dog.id);
   return (
     <div className='p-4'>
       <div className='flex gap-4'>
@@ -35,7 +37,11 @@ export default async function DogPage({
         <DogEditableCard dog={dog} />
       </div>
       <div className='pt-4'>
-        <DogPageTable userId={user.id} dogId={dog.id} />
+        <DogPageTable
+          userId={user.id}
+          dogId={dog.id}
+          conversations={conversations}
+        />
       </div>
     </div>
   );

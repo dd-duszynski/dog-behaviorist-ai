@@ -1,7 +1,8 @@
+'use server';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { ChatOpenAI } from '@langchain/openai';
 
-export const askAI = async (question: string) => {
+export const askAI = async (question: string, dogInfo: string) => {
   const model = new ChatOpenAI({
     apiKey: process.env.OPENAI_API_KEY,
     model: 'gpt-4.1-nano',
@@ -11,13 +12,13 @@ export const askAI = async (question: string) => {
   // new HumanMessage(body.message || "What is the capital of France?"),
   const messages = [
     new SystemMessage(
-      'You are a helpful AI dog behaviorist assistant. Answer only in Polish and only for question related to dogs. If the question is not related to dogs, answer: "Odpowiadam tylko na pytania dotyczące psów."'
+      `Jesteś pomocnym asystentem AI specjalizującym się w behawiorystyce psów. Odpowiadaj tylko na pytania dotyczące psów. Jeśli pytanie nie dotyczy psów, odpowiedz: "Odpowiadam tylko na pytania dotyczące psów". Do odpowiedzi używaj języka polskiego. Weź pod uwagę następujące informacje o psie: ${dogInfo}`
     ),
+
     new HumanMessage(question),
   ];
 
   const response = await model.invoke(messages);
-
-  // const response = await model.invoke([new HumanMessage(question)]);
-  return response;
+  // Return only the serializable content
+  return { content: response.content?.toString() ?? '' };
 };
