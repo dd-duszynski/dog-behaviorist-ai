@@ -1,22 +1,22 @@
 'use server';
-import prisma from '@/lib/db';
+import prisma from '@/lib/db/db';
 
 export async function createMessageAction(
-  conversationId: string,
+  chatId: string,
   content: string,
-  isAIanswer: boolean = false
+  isAi: boolean = false
 ) {
   try {
     const result = await prisma.message.create({
       data: {
         content,
-        conversationId,
-        isAIanswer,
+        chatId,
+        isAi,
       },
     });
     return result;
   } catch (error) {
-    console.error('Error in createMessageAction:', error);
+    console.error('createMessageAction:', error);
     throw error;
   }
 }

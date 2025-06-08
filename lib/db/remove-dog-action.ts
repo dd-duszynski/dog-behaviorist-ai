@@ -1,5 +1,5 @@
 'use server';
-import prisma from '@/lib/db';
+import prisma from '@/lib/db/db';
 
 export async function removeDogAction(dogId: string) {
   try {
@@ -10,7 +10,7 @@ export async function removeDogAction(dogId: string) {
     });
     return result;
   } catch (error) {
-    console.error('Error in removeDogAction:', error);
+    console.error('removeDogAction:', error);
     throw error;
   }
 }

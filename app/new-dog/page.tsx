@@ -1,5 +1,5 @@
 import { NewDogForm } from '@/components/new-dog-form/new-dog-form';
-import { getUserByClerkID } from '@/lib/getUserByClerkID';
+import { getUserByClerkID } from '@/lib/db/get-user-by-clerk-id';
 import { strings } from '@/lib/strings/pl';
 
 export default async function NewDogPage() {

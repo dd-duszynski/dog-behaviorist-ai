@@ -11,7 +11,7 @@ import { Mars, Venus } from 'lucide-react';
 import Link from 'next/link';
 import { ButtonWithConfirmationDialog } from '../button-with-confirmation-dialog/button-with-confirmation-dialog';
 import { Button } from '../ui/button';
-import { removeDogAction } from '@/lib/removeDogAction';
+import { removeDogAction } from '@/lib/db/remove-dog-action';
 import { redirect } from 'next/navigation';
 import { strings } from '@/lib/strings/pl';
 

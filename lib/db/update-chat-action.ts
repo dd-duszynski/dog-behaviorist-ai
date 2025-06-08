@@ -1,13 +1,13 @@
 'use server';
-import prisma from '@/lib/db';
+import prisma from '@/lib/db/db';
 
-export async function updateConversationAction(
+export async function updateChatAction(
   topic: string,
   summary: string,
   id: string
 ) {
   try {
-    const result = await prisma.conversation.update({
+    const result = await prisma.chat.update({
       where: {
         id: id,
       },
@@ -18,7 +18,7 @@ export async function updateConversationAction(
     });
     return result;
   } catch (error) {
-    console.error('updateConversationAction:', error);
+    console.error('updateChatAction:', error);
     throw error;
   }
 }

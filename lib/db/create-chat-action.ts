@@ -1,9 +1,9 @@
 'use server';
-import prisma from '@/lib/db';
+import prisma from '@/lib/db/db';
 
 export async function createChatAction(userId: string, dogId: string) {
   try {
-    const result = await prisma.conversation.create({
+    const result = await prisma.chat.create({
       data: {
         userId,
         dogId,
@@ -11,7 +11,7 @@ export async function createChatAction(userId: string, dogId: string) {
     });
     return result;
   } catch (error) {
-    console.error('Error in createChatAction:', error);
+    console.error('createChatAction:', error);
     throw error;
   }
 }

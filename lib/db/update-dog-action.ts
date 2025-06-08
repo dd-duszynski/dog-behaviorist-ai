@@ -1,8 +1,11 @@
 'use server';
-import prisma from '@/lib/db';
+import prisma from '@/lib/db/db';
 
-// export async function createDog(formData: FormData) {
-export async function createDogAction(formData: any, userId: string) {
+export async function updateDogAction(
+  formData: any,
+  userId: string,
+  dogId: string
+) {
   try {
     const activityLevel = formData.activityLevel;
     const basicFood = formData.basicFood;
@@ -22,7 +25,11 @@ export async function createDogAction(formData: any, userId: string) {
     const photo = formData.photo || null;
     const relationToFood = formData.relationToFood;
     const weight = formData.weight;
-    const result = await prisma.dog.create({
+
+    const result = await prisma.dog.update({
+      where: {
+        id: dogId,
+      },
       data: {
         activityLevel,
         basicFood,
@@ -41,13 +48,13 @@ export async function createDogAction(formData: any, userId: string) {
         others,
         photo,
         relationToFood,
-        userId,
+        userId, // Ensure the dog belongs to the correct user
         weight,
       },
     });
     return result;
   } catch (error) {
-    console.error('Error in createDogAction:', error);
+    console.error('Error in updateDogAction:', error);
     throw error;
   }
 }

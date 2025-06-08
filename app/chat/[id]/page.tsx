@@ -1,5 +1,5 @@
 import { Chat } from '@/components/chat/chat';
-import { getUserByClerkID } from '@/lib/getUserByClerkID';
+import { getUserByClerkID } from '@/lib/db/get-user-by-clerk-id';
 import { strings } from '@/lib/strings/pl';
 
 export default async function ChatPage({

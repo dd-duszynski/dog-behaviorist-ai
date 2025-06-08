@@ -1,12 +1,12 @@
 import { DogCard } from '@/components/dog-card/dog-card';
 import FirstDogPage from '@/components/first-dog-page/first-dog.page';
 import { Button } from '@/components/ui/button';
-import { getDogs } from '@/lib/getDogs';
+import { getDogsByUserId } from '@/lib/db/get-dogs-by-user-id';
 import { strings } from '@/lib/strings/pl';
 import Link from 'next/link';
 
 export default async function DogsPage() {
-  const dogs = await getDogs();
+  const dogs = await getDogsByUserId();
   if (!dogs || dogs.length === 0) {
     return <FirstDogPage />;
   }

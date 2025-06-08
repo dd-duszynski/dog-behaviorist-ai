@@ -1,30 +1,29 @@
 'use client';
-import React from 'react';
 import { GenericTable } from '@/components/generic-table/generic-table';
+import { createChatAction } from '@/lib/db/create-chat-action';
+import { TChat } from '@/lib/models/chat-model';
 import { strings } from '@/lib/strings/pl';
 import { redirect } from 'next/navigation';
-import { createChatAction } from '@/lib/createChatAction';
-import { Conversation } from '@prisma/client';
 
 type DogPageTableProps = {
-  conversations: Conversation[];
+  chats: TChat[];
   dogId: string;
   userId: string;
 };
 
 export const DogPageTable = (props: DogPageTableProps) => {
-  const { conversations, dogId, userId } = props;
+  const { chats, dogId, userId } = props;
   const tableColumns = [
     { key: 'question', label: 'Pytanie' },
     { key: 'topic', label: 'Temat' },
     { key: 'date', label: 'Data' },
   ];
   const rows =
-    conversations?.map((conversation) => ({
-      question: conversation?.messages[0]?.content || 'No messages',
-      topic: conversation.topic || 'No topic',
-      date: new Date(conversation.createdAt).toLocaleDateString(),
-      link: `/chat/${conversation.id}`,
+    chats?.map((chat) => ({
+      question: chat?.messages[0]?.content || 'No messages',
+      topic: chat.topic || 'No topic',
+      date: new Date(chat.createdAt).toLocaleDateString(),
+      link: `/chat/${chat.id}`,
     })) || [];
   return (
     <GenericTable

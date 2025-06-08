@@ -1,6 +1,6 @@
 import FirstDogPage from '@/components/first-dog-page/first-dog.page';
-import prisma from '@/lib/db';
-import { getDogs } from '@/lib/getDogs';
+import prisma from '@/lib/db/db';
+import { getDogsByUserId } from '@/lib/db/get-dogs-by-user-id';
 import { strings } from '@/lib/strings/pl';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
@@ -30,7 +30,7 @@ export default async function Page() {
       },
     });
   }
-  const dogs = await getDogs();
+  const dogs = await getDogsByUserId();
   if (!dogs || dogs.length === 0) {
     return <FirstDogPage />;
   }

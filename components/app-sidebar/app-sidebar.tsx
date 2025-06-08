@@ -11,51 +11,51 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
+import { TChat } from '@/lib/models/chat-model';
+import { strings } from '@/lib/strings/pl';
+import type { Dog } from '@prisma/client';
+
 import {
-  Home,
-  PawPrint,
-  Mars,
-  Settings,
-  Venus,
   BotMessageSquare,
   Dog as DogIcon,
+  Home,
+  Mars,
+  PawPrint,
+  Settings,
+  Venus,
 } from 'lucide-react';
-import type { Conversation, Dog } from '@prisma/client';
-import { strings } from '@/lib/strings/pl';
 
-const prepareConversationTitle = (params: {
-  conversations: Conversation[];
+const prepareChatTitle = (params: {
+  chats: TChat[];
   dogs: Dog[];
   dogId: string;
-  conversationId: string;
+  chatId: string;
 }) => {
-  const { conversations, dogs, dogId, conversationId } = params;
+  const { chats, dogs, dogId, chatId } = params;
   const dog = dogs.find((dog) => dog.id === dogId);
-  const conversation = conversations.find((c) => c.id === conversationId);
+  const chat = chats.find((c) => c.id === chatId);
   const dogName = dog ? dog.name : '';
-  const conversationTopic = conversation ? conversation.topic : '';
-  return `${dogName} - ${conversationTopic}`;
+  const chatTopic = chat ? chat.topic : '';
+  return `${dogName} - ${chatTopic}`;
 };
 
-const generateMenuItems = (dogs: Dog[], conversations: Conversation[]) => {
+const generateMenuItems = (dogs: Dog[], chats: TChat[]) => {
   const dogsItems = dogs.map((dog: Dog) => ({
     title: dog.name,
     url: `/dogs/${dog.id}`,
     icon: dog.gender === 'MALE' ? <Mars /> : <Venus />,
   }));
 
-  const conversationsItems = conversations.map(
-    (conversation: Conversation) => ({
-      title: prepareConversationTitle({
-        conversations,
-        dogs,
-        dogId: conversation.dogId,
-        conversationId: conversation.id,
-      }),
-      url: `/chat/${conversation.id}`,
-      icon: BotMessageSquare,
-    })
-  );
+  const chatsItems = chats.map((chat: TChat) => ({
+    title: prepareChatTitle({
+      chats: chats,
+      dogs,
+      dogId: chat.dogId,
+      chatId: chat.id,
+    }),
+    url: `/chat/${chat.id}`,
+    icon: BotMessageSquare,
+  }));
 
   return [
     {
@@ -73,7 +73,7 @@ const generateMenuItems = (dogs: Dog[], conversations: Conversation[]) => {
       title: strings.app_sidebar.history,
       url: '/history',
       icon: PawPrint,
-      items: conversationsItems,
+      items: chatsItems,
       className: 'wordspace-nowrap',
     },
     {
@@ -86,11 +86,11 @@ const generateMenuItems = (dogs: Dog[], conversations: Conversation[]) => {
 
 type AppSidebarProps = {
   dogs: Dog[];
-  conversations: Conversation[];
+  chats: TChat[];
 };
 
-export function AppSidebar({ dogs, conversations }: AppSidebarProps) {
-  const menuItems = generateMenuItems(dogs, conversations);
+export function AppSidebar({ dogs, chats }: AppSidebarProps) {
+  const menuItems = generateMenuItems(dogs, chats);
   return (
     <Sidebar collapsible='icon'>
       <SidebarContent>

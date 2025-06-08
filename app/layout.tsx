@@ -5,8 +5,8 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar/app-sidebar';
 import { Header } from '@/components/header/header';
 import { ClerkProvider } from '@clerk/nextjs';
-import { getDogs } from '@/lib/getDogs';
-import { getAllUserConversations } from '@/lib/getAllUserConversations';
+import { getDogsByUserId } from '@/lib/db/get-dogs-by-user-id';
+import { getAllChatsByUserId } from '@/lib/db/get-all-chats-by-user-id';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -28,8 +28,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const dogs = await getDogs();
-  const conversations = await getAllUserConversations();
+  const dogs = await getDogsByUserId();
+  const chats = await getAllChatsByUserId();
   return (
     <ClerkProvider>
       <html lang='en'>
@@ -37,7 +37,7 @@ export default async function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
         >
           <SidebarProvider>
-            <AppSidebar dogs={dogs} conversations={conversations} />
+            <AppSidebar dogs={dogs} chats={chats} />
             <main className='w-full min-h-full relative'>
               <Header />
               <div className='overflow-y-auto h-[calc(100vh-6rem)]'>

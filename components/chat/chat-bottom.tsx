@@ -1,21 +1,21 @@
 'use client';
-import { createMessageAction } from '@/lib/createMessageAction';
+import { askAI } from '@/lib/ai/analyze';
+import { createMessageAction } from '@/lib/db/create-message-action';
+import { TChat } from '@/lib/models/chat-model';
 import { strings } from '@/lib/strings/pl';
-import { Conversation } from '@prisma/client';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
-import { useRouter } from 'next/navigation';
-import { askAI } from '@/lib/ai/analyze';
 
 interface ChatBottomProps {
-  conversation: Conversation | null;
+  chat: TChat | null;
   id: string;
   userId: string;
   mappedDogInfo: string;
 }
 
-export function ChatBottom({ conversation, mappedDogInfo }: ChatBottomProps) {
+export function ChatBottom({ chat, mappedDogInfo }: ChatBottomProps) {
   const [content, setContent] = useState('');
   const router = useRouter();
   const refresh = () => {
@@ -23,15 +23,11 @@ export function ChatBottom({ conversation, mappedDogInfo }: ChatBottomProps) {
   };
 
   const triggerAiAnswer = async (question: string) => {
-    if (!conversation) return;
+    if (!chat) return;
     try {
       const aiAnswer = await askAI(question, mappedDogInfo || '');
       if (aiAnswer) {
-        await createMessageAction(
-          conversation.id,
-          aiAnswer.content.toString(),
-          true
-        );
+        await createMessageAction(chat.id, aiAnswer.content.toString(), true);
       }
     } catch (error) {
       console.error('triggerAiAnswer:', error);
@@ -51,8 +47,8 @@ export function ChatBottom({ conversation, mappedDogInfo }: ChatBottomProps) {
         className='mt-2 bg-[#3ea8cf]'
         variant='default'
         onClick={async () => {
-          if (!conversation) return;
-          await createMessageAction(conversation.id, content);
+          if (!chat) return;
+          await createMessageAction(chat.id, content);
           await triggerAiAnswer(content);
           setContent('');
           refresh();

@@ -13,8 +13,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { createDogAction } from '@/lib/createDogAction';
-import { updateDogAction } from '@/lib/updateDogAction';
+import { createDogAction } from '@/lib/db/create-dog-action';
+import { updateDogAction } from '@/lib/db/update-dog-action';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Dog } from '@prisma/client';
