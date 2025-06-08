@@ -24,12 +24,9 @@ export function ChatBottom({ conversation, mappedDogInfo }: ChatBottomProps) {
 
   const triggerAiAnswer = async (question: string) => {
     if (!conversation) return;
-    console.log('question:', question);
-    console.log('conversation:', conversation);
     try {
       const aiAnswer = await askAI(question, mappedDogInfo || '');
       if (aiAnswer) {
-        console.log('aiAnswer:', aiAnswer);
         await createMessageAction(
           conversation.id,
           aiAnswer.content.toString(),

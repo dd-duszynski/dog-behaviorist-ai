@@ -9,7 +9,6 @@ export async function createChatAction(userId: string, dogId: string) {
         dogId,
       },
     });
-    console.log('createChatAction result:', result);
     return result;
   } catch (error) {
     console.error('Error in createChatAction:', error);

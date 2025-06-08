@@ -45,7 +45,6 @@ export const DogEditableCard = ({ dog }: DogEditableCardProps) => {
               description={strings.dogs.remove_description}
               onConfirm={async () => {
                 const result = await removeDogAction(dog.id);
-                console.log('result:', result);
                 redirect(`/dogs`);
               }}
             />

@@ -14,7 +14,6 @@ export async function createMessageAction(
         isAIanswer,
       },
     });
-    console.log('createMessageAction result:', result);
     return result;
   } catch (error) {
     console.error('Error in createMessageAction:', error);
