@@ -1,6 +1,5 @@
 'use client';
 import { GenericTable } from '@/components/generic-table/generic-table';
-import { createChatAction } from '@/lib/db/create-chat-action';
 import { TChat } from '@/lib/models/chat-model';
 import { strings } from '@/lib/strings/pl';
 import { redirect } from 'next/navigation';
@@ -8,11 +7,10 @@ import { redirect } from 'next/navigation';
 type DogPageTableProps = {
   chats: TChat[];
   dogId: string;
-  userId: string;
 };
 
 export const DogPageTable = (props: DogPageTableProps) => {
-  const { chats, dogId, userId } = props;
+  const { chats, dogId } = props;
   const tableColumns = [
     { key: 'question', label: 'Pytanie' },
     { key: 'topic', label: 'Temat' },
@@ -32,8 +30,7 @@ export const DogPageTable = (props: DogPageTableProps) => {
       rows={rows}
       footerButtonLabel={strings.dogs.new_thread}
       onFooterButtonClick={async () => {
-        const result = await createChatAction(userId, dogId);
-        redirect('/chat/' + result.id);
+        redirect(`/chat/new-${dogId}`);
       }}
     />
   );

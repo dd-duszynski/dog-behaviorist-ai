@@ -1,6 +1,6 @@
 'use client';
 
-type MessageProps = {
+export type MessageProps = {
   text: string;
   isAi: boolean;
 };

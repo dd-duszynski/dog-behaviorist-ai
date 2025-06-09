@@ -14,7 +14,6 @@ export const askAI = async (question: string, dogInfo: string) => {
     new SystemMessage(
       `Jesteś pomocnym asystentem AI specjalizującym się w behawiorystyce psów. Odpowiadaj tylko na pytania dotyczące psów. Jeśli pytanie nie dotyczy psów, odpowiedz: "Odpowiadam tylko na pytania dotyczące psów". Do odpowiedzi używaj języka polskiego. Weź pod uwagę następujące informacje o psie: ${dogInfo}`
     ),
-
     new HumanMessage(question),
   ];
 

@@ -112,7 +112,7 @@ export function AppSidebar({ dogs, chats }: AppSidebarProps) {
                         <SidebarMenuSubItem key={i.title} className='truncate'>
                           <SidebarMenuSubButton
                             asChild
-                            className='block text-ellipsis text-nowrap whitespace-nowrap'
+                            className='text-ellipsis text-nowrap whitespace-nowrap'
                           >
                             <a href={i.url}>{i.title}</a>
                           </SidebarMenuSubButton>

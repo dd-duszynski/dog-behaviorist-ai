@@ -7,27 +7,49 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
+import { createChatAction } from '@/lib/db/create-chat-action';
+import { redirect } from 'next/navigation';
 
-interface ChatBottomProps {
+interface ChatInputProps {
   chat: TChat | null;
-  id: string;
-  userId: string;
+  dogId: string;
   mappedDogInfo: string;
+  userId: string;
+  isNewChat?: boolean;
 }
 
-export function ChatBottom({ chat, mappedDogInfo }: ChatBottomProps) {
+export function ChatInput({
+  chat,
+  dogId,
+  mappedDogInfo,
+  userId,
+  isNewChat,
+}: ChatInputProps) {
   const [content, setContent] = useState('');
   const router = useRouter();
+
   const refresh = () => {
     router.refresh();
   };
 
-  const triggerAiAnswer = async (question: string) => {
-    if (!chat) return;
+  const createChat = async (userId: string, dogId: string) => {
+    try {
+      const result = await createChatAction(userId, dogId);
+      return result ? result.id : null;
+    } catch (error) {
+      console.error('createChat:', error);
+    }
+  };
+
+  const triggerAiAnswer = async (createdChatId: string, question: string) => {
     try {
       const aiAnswer = await askAI(question, mappedDogInfo || '');
       if (aiAnswer) {
-        await createMessageAction(chat.id, aiAnswer.content.toString(), true);
+        await createMessageAction(
+          createdChatId,
+          aiAnswer.content.toString(),
+          true
+        );
       }
     } catch (error) {
       console.error('triggerAiAnswer:', error);
@@ -47,11 +69,18 @@ export function ChatBottom({ chat, mappedDogInfo }: ChatBottomProps) {
         className='mt-2 bg-[#3ea8cf]'
         variant='default'
         onClick={async () => {
-          if (!chat) return;
-          await createMessageAction(chat.id, content);
-          await triggerAiAnswer(content);
-          setContent('');
-          refresh();
+          if (!chat) {
+            const createdChatId = await createChat(userId, dogId);
+            if (!createdChatId) return;
+            await createMessageAction(createdChatId, content);
+            await triggerAiAnswer(createdChatId, content);
+            setContent('');
+            if (isNewChat) {
+              redirect(`/chat/${createdChatId}`);
+            } else {
+              refresh();
+            }
+          }
         }}
       >
         {strings.general.submit}
