@@ -1,15 +1,13 @@
 'use client';
 import { askAI } from '@/lib/ai/analyze';
+import { createChatAction } from '@/lib/db/create-chat-action';
 import { createMessageAction } from '@/lib/db/create-message-action';
 import { TChat } from '@/lib/models/chat-model';
-import { strings } from '@/lib/strings/pl';
-import { useRouter } from 'next/navigation';
+import { SendHorizontal } from 'lucide-react';
+import { redirect, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
-import { createChatAction } from '@/lib/db/create-chat-action';
-import { redirect } from 'next/navigation';
-
 interface ChatInputProps {
   chat: TChat | null;
   dogId: string;
@@ -57,16 +55,17 @@ export function ChatInput({
   };
 
   return (
-    <div className='flex flex-row justify-between gap-4 w-full h-full mt-6'>
+    <div className='flex flex-row justify-between gap-4 w-full h-full mt-6 relative'>
       <Textarea
         placeholder='Type your message here.'
         value={content}
+        className='bg-slate-300  min-h-32 max-h-60 pr-14'
         onChange={(e) => {
           setContent(e.target.value);
         }}
       />
       <Button
-        className='mt-2 bg-[#3ea8cf]'
+        className='bg-[#3ea8cf] h-14 w-14 absolute right-5 bottom-5 rounded-full'
         variant='default'
         onClick={async () => {
           if (!chat) {
@@ -83,7 +82,7 @@ export function ChatInput({
           }
         }}
       >
-        {strings.general.submit}
+        <SendHorizontal />
       </Button>
     </div>
   );

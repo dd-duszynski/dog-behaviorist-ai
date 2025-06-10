@@ -8,11 +8,15 @@ export type MessageProps = {
 const Message = ({ text, isAi }: MessageProps) => {
   return (
     <div
-      className={`flex flex-row w-[80%] items-start ${
-        isAi ? 'self-start' : 'self-end'
+      className={`flex flex-row w-[80%] mb-3 items-start ${
+        isAi ? 'self-start' : 'self-end justify-end'
       }`}
     >
-      <div className='p-4 bg-secondary text-secondary-foreground rounded-r-lg rounded-tl-lg break-words max-w-full whitespace-pre-wrap'>
+      <div
+        className={`p-4  text-secondary-foreground rounded-r-lg rounded-tl-lg break-words max-w-full whitespace-pre-wrap ${
+          isAi ? 'bg-slate-200' : 'bg-slate-300'
+        }`}
+      >
         {text}
       </div>
     </div>
