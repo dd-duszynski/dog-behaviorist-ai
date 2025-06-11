@@ -1,12 +1,15 @@
+'use server';
+
 import { auth } from '@clerk/nextjs/server';
 import prisma from './db';
 import { TUserBasic } from '../models/user-model';
 
-export const getUserByClerkID = async (): Promise<TUserBasic> => {
+export const getUserByClerkID = async (): Promise<TUserBasic | null> => {
   try {
     const { userId } = await auth();
     if (!userId) {
-      throw new Error('User is not authenticated');
+      console.error('UNAUTHORIZED');
+      return null;
     }
     const user = await prisma.user.findUniqueOrThrow({
       where: {

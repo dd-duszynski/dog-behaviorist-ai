@@ -11,6 +11,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
+import { getAllChatsByUserId } from '@/lib/db/get-all-chats-by-user-id';
+import { getDogsByUserId } from '@/lib/db/get-dogs-by-user-id';
 import { TChat } from '@/lib/models/chat-model';
 import { strings } from '@/lib/strings/pl';
 import type { Dog } from '@prisma/client';
@@ -84,12 +86,9 @@ const generateMenuItems = (dogs: Dog[], chats: TChat[]) => {
   ];
 };
 
-type AppSidebarProps = {
-  dogs: Dog[];
-  chats: TChat[];
-};
-
-export function AppSidebar({ dogs, chats }: AppSidebarProps) {
+export async function AppSidebar() {
+  const dogs = await getDogsByUserId();
+  const chats = await getAllChatsByUserId();
   const menuItems = generateMenuItems(dogs, chats);
   return (
     <Sidebar collapsible='icon'>

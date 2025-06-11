@@ -20,7 +20,7 @@ export async function NewChat({ userId, id, dogId }: NewChatProps) {
   ];
 
   return (
-    <div className='flex flex-col justify-between w-full h-full'>
+    <div className='flex flex-col justify-between w-full h-full max-w-[120ch] relative'>
       <ChatMessages id={id} messages={[...initialMessages]} userId={userId} />
       <ChatInput
         chat={null}

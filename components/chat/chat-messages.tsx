@@ -13,8 +13,10 @@ const Message = ({ text, isAi }: MessageProps) => {
       }`}
     >
       <div
-        className={`p-4  text-secondary-foreground rounded-r-lg rounded-tl-lg break-words max-w-full whitespace-pre-wrap ${
-          isAi ? 'bg-slate-200' : 'bg-slate-300'
+        className={`p-4  text-secondary-foreground break-words max-w-full whitespace-pre-wrap ${
+          isAi
+            ? 'bg-slate-200 rounded-r-lg rounded-tl-lg'
+            : 'bg-slate-300 rounded-l-lg rounded-tr-lg'
         }`}
       >
         {text}

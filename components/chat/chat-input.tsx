@@ -55,35 +55,42 @@ export function ChatInput({
   };
 
   return (
-    <div className='flex flex-row justify-between gap-4 w-full h-full mt-6 relative'>
-      <Textarea
-        placeholder='Type your message here.'
-        value={content}
-        className='bg-slate-300  min-h-32 max-h-60 pr-14'
-        onChange={(e) => {
-          setContent(e.target.value);
-        }}
-      />
-      <Button
-        className='bg-[#3ea8cf] h-14 w-14 absolute right-5 bottom-5 rounded-full'
-        variant='default'
-        onClick={async () => {
-          if (!chat) {
-            const createdChatId = await createChat(userId, dogId);
-            if (!createdChatId) return;
-            await createMessageAction(createdChatId, content);
-            await triggerAiAnswer(createdChatId, content);
-            setContent('');
-            if (isNewChat) {
-              redirect(`/chat/${createdChatId}`);
+    <div className='absolute bottom-0 left-0 w-full'>
+      <div className='flex flex-row justify-between gap-4 w-full h-full mt-6 relative'>
+        <Textarea
+          placeholder='Type your message here.'
+          value={content}
+          className='bg-slate-300  min-h-32 max-h-60 pr-14 border-[#3EA8CF] border-2 rounded-lg'
+          onChange={(e) => {
+            setContent(e.target.value);
+          }}
+        />
+        <Button
+          className='bg-[#3ea8cf] h-14 w-14 absolute right-5 bottom-5 rounded-full'
+          variant='default'
+          onClick={async () => {
+            if (!chat) {
+              const createdChatId = await createChat(userId, dogId);
+              if (!createdChatId) return;
+              await createMessageAction(createdChatId, content);
+              await triggerAiAnswer(createdChatId, content);
+              setContent('');
+              if (isNewChat) {
+                redirect(`/chat/${createdChatId}`);
+              } else {
+                refresh();
+              }
             } else {
+              await createMessageAction(chat.id, content);
+              await triggerAiAnswer(chat.id, content);
+              setContent('');
               refresh();
             }
-          }
-        }}
-      >
-        <SendHorizontal />
-      </Button>
+          }}
+        >
+          <SendHorizontal />
+        </Button>
+      </div>
     </div>
   );
 }
