@@ -35,7 +35,7 @@ export async function Chat({ userId, id }: ChatProps) {
   }
 
   return (
-    <div className='flex flex-col justify-between w-full h-full max-w-[120ch]'>
+    <div className='w-full max-h-full max-w-[120ch] grid grid-cols-1 grid-rows-[1fr_120px] h-[calc(100vh-120px)]'>
       <ChatMessages id={id} messages={messages} userId={userId} />
       <ChatInput
         chat={chat}

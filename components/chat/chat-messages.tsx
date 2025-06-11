@@ -33,7 +33,7 @@ interface ChatBottomProps {
 
 export const ChatMessages = ({ messages }: ChatBottomProps) => {
   return (
-    <div className='flex flex-col justify-between w-full h-full'>
+    <div className='flex flex-col justify-start w-full h-full overflow-auto min-h-0'>
       {messages.map((message, index) => (
         <Message key={index} text={message.text} isAi={message.isAi} />
       ))}
