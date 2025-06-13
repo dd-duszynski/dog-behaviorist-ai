@@ -71,15 +71,13 @@ const formSchema = z
       )
       .transform((date) => new Date(date)),
     breed: z.string({
-      message: 'Breed must be selected.',
+      required_error: 'Breed must be selected.',
     }),
     breedOther: z.string().optional(),
     castrated: z.enum(['YES', 'NO'], {
       required_error: 'You need to select.',
     }),
-    favoriteActivity: z.string().min(2, {
-      message: 'Favorite activity must be at least 2 characters.',
-    }),
+    favoriteActivity: z.string().optional(),
     favoriteSnack: z.string(),
     favoriteToy: z.string(),
     gender: z.enum(['MALE', 'FEMALE'], {
@@ -98,9 +96,9 @@ const formSchema = z
     originOther: z.string().optional(),
     others: z.string().optional(),
     relationToFood: z.string({
-      message: 'Favorite place must be at least 2 characters.',
+      required_error: 'Favorite place must be at least 2 characters.',
     }),
-    weight: z.string({
+    weight: z.string().min(1, {
       message: 'Weight is required.',
     }),
   })
@@ -159,7 +157,8 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
       breedOther: isEditMode && dog ? dog.breedOther ?? undefined : undefined,
       castrated: isEditMode && dog ? dog.castrated : 'NO',
       photo: isEditMode && dog ? dog.photo : undefined,
-      favoriteActivity: isEditMode && dog ? dog.favoriteActivity : '',
+      favoriteActivity:
+        isEditMode && dog && dog.favoriteActivity ? dog.favoriteActivity : '',
       favoriteSnack:
         isEditMode && dog && dog.favoriteSnack ? dog.favoriteSnack : '',
       favoriteToy: isEditMode && dog && dog.favoriteToy ? dog.favoriteToy : '',
@@ -171,13 +170,14 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
       origin: isEditMode && dog ? dog.origin : 'BREEDING',
       originOther:
         isEditMode && dog && dog.originOther ? dog.originOther : undefined,
-      others: isEditMode && dog ? dog.others : '',
+      others: isEditMode && dog && dog.others ? dog.others : '',
       relationToFood: isEditMode && dog ? dog.relationToFood : '1',
       weight: isEditMode && dog ? dog.weight : undefined,
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log('values:', values);
     // if (values.photo) {
     //   const arrayBuffer = await values.photo.arrayBuffer();
     //   console.log('onSubmitAction file:', values.photo);
@@ -193,9 +193,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
     }
   }
 
-  /* TODO_DD:  */
-  // https://www.youtube.com/watch?v=dDpZfOQBMaU&ab_channel=leerob
-
   const breedValue = form.watch('breed');
   const healthProblemsValue = form.watch('healthProblems');
   const originValue = form.watch('origin');
@@ -205,7 +202,9 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
     <Form {...form}>
       <form
         className='flex flex-col justify-center w-[600px] gap-6'
-        // onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, (e) => {
+          console.log('e:', e);
+        })}
       >
         <FormField
           control={form.control}
@@ -407,6 +406,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                       placeholder='Other breed'
                       {...field}
                       className='mt-6'
+                      disabled={breedValue !== 'OTHER'}
                     />
                   </FormControl>
                   {/* <FormDescription>This is your dog breed.</FormDescription> */}
@@ -786,9 +786,9 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
             className='px-6'
             type='submit'
             variant='outline'
-            onClick={form.handleSubmit(onSubmit, (e) => {
-              console.log('e:', e);
-            })}
+            // onClick={form.handleSubmit(onSubmit, (e) => {
+            //   console.log('e:', e);
+            // })}
           >
             {isEditMode ? strings.general.save : strings.general.submit}
           </Button>
