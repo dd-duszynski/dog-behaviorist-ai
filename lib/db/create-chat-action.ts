@@ -1,4 +1,5 @@
 'use server';
+
 import prisma from '@/lib/db/db';
 
 export async function createChatAction(userId: string, dogId: string) {

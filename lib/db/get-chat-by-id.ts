@@ -1,3 +1,5 @@
+'use server';
+
 import { TChat } from '../models/chat-model';
 import prisma from './db';
 import { getUserByClerkID } from './get-user-by-clerk-id';

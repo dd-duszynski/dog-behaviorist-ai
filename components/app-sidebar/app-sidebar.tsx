@@ -16,7 +16,6 @@ import { getDogsByUserId } from '@/lib/db/get-dogs-by-user-id';
 import { TChat } from '@/lib/models/chat-model';
 import { strings } from '@/lib/strings/pl';
 import type { Dog } from '@prisma/client';
-
 import {
   BotMessageSquare,
   Dog as DogIcon,

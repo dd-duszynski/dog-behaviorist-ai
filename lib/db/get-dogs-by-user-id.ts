@@ -1,3 +1,5 @@
+'use server';
+
 import { getUserByClerkID } from '@/lib/db/get-user-by-clerk-id';
 import prisma from '@/lib/db/db';
 import { TDog } from '../models/dog-model';
@@ -19,7 +21,8 @@ export const getDogsByUserId = async (): Promise<TDog[]> => {
       },
     });
     if (!dogs || dogs.length === 0) {
-      throw new Error(`No dogs found for user ${user?.id}`);
+      console.log(`No dogs found for user ${user?.id}`);
+      return [];
     }
     return dogs;
   } catch (error) {

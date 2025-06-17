@@ -59,7 +59,7 @@ model Chat {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  dog      Dog       @relation(fields: [dogId], references: [id])
+  dog      Dog       @relation(fields: [dogId], references: [id], onDelete: Cascade)
   dogId    String
   messages Message[]
   summary  String?
@@ -73,7 +73,7 @@ model Message {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  chat    Chat    @relation(fields: [chatId], references: [id])
+  chat    Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId  String
   content String
   isAi    Boolean @default(false)

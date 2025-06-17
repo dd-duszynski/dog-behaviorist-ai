@@ -1,3 +1,5 @@
+'use server';
+
 import prisma from '@/lib/db/db';
 import { getUserByClerkID } from '@/lib/db/get-user-by-clerk-id';
 import { TDog } from '../models/dog-model';

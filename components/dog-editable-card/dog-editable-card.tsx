@@ -44,8 +44,8 @@ export const DogEditableCard = ({ dog }: DogEditableCardProps) => {
             <ButtonWithConfirmationDialog
               description={strings.dogs.remove_description}
               onConfirm={async () => {
-                const result = await removeDogAction(dog.id);
-                redirect(`/dogs`);
+                await removeDogAction(dog.id);
+                redirect(`/`);
               }}
             />
           </div>
