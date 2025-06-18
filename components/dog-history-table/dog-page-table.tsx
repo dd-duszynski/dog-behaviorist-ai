@@ -1,5 +1,6 @@
 'use client';
 import { GenericTable } from '@/components/generic-table/generic-table';
+import { removeChatAction } from '@/lib/db/remove-chat-action';
 import { TChat } from '@/lib/models/chat-model';
 import { strings } from '@/lib/strings/pl';
 import { redirect } from 'next/navigation';
@@ -15,6 +16,7 @@ export const DogPageTable = (props: DogPageTableProps) => {
     { key: 'question', label: 'Pytanie' },
     { key: 'topic', label: 'Temat' },
     { key: 'date', label: 'Data' },
+    { key: 'actions', label: 'Akcje' },
   ];
   const rows =
     chats?.map((chat) => ({
@@ -22,6 +24,7 @@ export const DogPageTable = (props: DogPageTableProps) => {
       topic: chat.topic || 'No topic',
       date: new Date(chat.createdAt).toLocaleDateString(),
       link: `/chat/${chat.id}`,
+      onDelete: async () => await removeChatAction(chat.id, dogId),
     })) || [];
   return (
     <GenericTable

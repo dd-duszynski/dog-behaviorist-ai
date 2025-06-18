@@ -11,7 +11,6 @@ export default async function Page() {
     redirect('/sign-in');
   }
   const user = await currentUser();
-
   const match = await prisma.user.findUnique({
     where: {
       clerkId: user?.id as string,

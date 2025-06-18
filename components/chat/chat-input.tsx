@@ -1,5 +1,5 @@
 'use client';
-import { askAI } from '@/lib/ai/analyze';
+import { askAi } from '@/lib/ai/analyze';
 import { createChatAction } from '@/lib/db/create-chat-action';
 import { createMessageAction } from '@/lib/db/create-message-action';
 import { TChat } from '@/lib/models/chat-model';
@@ -8,12 +8,15 @@ import { redirect, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
+import { getChatByID } from '@/lib/db/get-chat-by-id';
+import { prepareChatSummary } from '@/lib/utils/prepareChatSummary';
+
 interface ChatInputProps {
   chat: TChat | null;
   dogId: string;
+  isNewChat?: boolean;
   mappedDogInfo: string;
   userId: string;
-  isNewChat?: boolean;
 }
 
 export function ChatInput({
@@ -33,7 +36,7 @@ export function ChatInput({
   const createChat = async (userId: string, dogId: string) => {
     try {
       const result = await createChatAction(userId, dogId);
-      return result ? result.id : null;
+      return result ? result : null;
     } catch (error) {
       console.error('createChat:', error);
     }
@@ -41,7 +44,7 @@ export function ChatInput({
 
   const triggerAiAnswer = async (createdChatId: string, question: string) => {
     try {
-      const aiAnswer = await askAI(question, mappedDogInfo || '');
+      const aiAnswer = await askAi(question, mappedDogInfo || '');
       if (aiAnswer) {
         await createMessageAction(
           createdChatId,
@@ -51,6 +54,28 @@ export function ChatInput({
       }
     } catch (error) {
       console.error('triggerAiAnswer:', error);
+    }
+  };
+
+  const handleClick = async () => {
+    if (!chat) {
+      const createdChat = await createChat(userId, dogId);
+      if (!createdChat || !createdChat.id) return;
+      await createMessageAction(createdChat.id, content);
+      await triggerAiAnswer(createdChat.id, content);
+      const updatedChat = await getChatByID(createdChat.id);
+      if (updatedChat) await prepareChatSummary(updatedChat);
+      setContent('');
+      if (isNewChat) {
+        redirect(`/chat/${createdChat.id}`);
+      } else {
+        refresh();
+      }
+    } else {
+      await createMessageAction(chat.id, content);
+      await triggerAiAnswer(chat.id, content);
+      setContent('');
+      refresh();
     }
   };
 
@@ -68,25 +93,7 @@ export function ChatInput({
         className='bg-[#3ea8cf] h-14 w-14 absolute right-5 bottom-2 rounded-full'
         variant='default'
         disabled={!content.trim()}
-        onClick={async () => {
-          if (!chat) {
-            const createdChatId = await createChat(userId, dogId);
-            if (!createdChatId) return;
-            await createMessageAction(createdChatId, content);
-            await triggerAiAnswer(createdChatId, content);
-            setContent('');
-            if (isNewChat) {
-              redirect(`/chat/${createdChatId}`);
-            } else {
-              refresh();
-            }
-          } else {
-            await createMessageAction(chat.id, content);
-            await triggerAiAnswer(chat.id, content);
-            setContent('');
-            refresh();
-          }
-        }}
+        onClick={handleClick}
       >
         <SendHorizontal />
       </Button>

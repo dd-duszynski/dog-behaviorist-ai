@@ -1,6 +1,7 @@
 'use server';
 
 import prisma from '@/lib/db/db';
+import { revalidatePath } from 'next/cache';
 
 export async function createChatAction(userId: string, dogId: string) {
   try {
@@ -10,6 +11,7 @@ export async function createChatAction(userId: string, dogId: string) {
         dogId,
       },
     });
+    revalidatePath('/');
     return result;
   } catch (error) {
     console.error('createChatAction:', error);

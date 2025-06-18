@@ -36,7 +36,7 @@ const prepareChatTitle = (params: {
   const dog = dogs.find((dog) => dog.id === dogId);
   const chat = chats.find((c) => c.id === chatId);
   const dogName = dog ? dog.name : '';
-  const chatTopic = chat ? chat.topic : '';
+  const chatTopic = chat && chat.topic ? chat.topic : 'nowy czat';
   return `${dogName} - ${chatTopic}`;
 };
 

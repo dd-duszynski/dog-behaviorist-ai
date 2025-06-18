@@ -11,6 +11,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import Link from 'next/link';
+import { Trash2 } from 'lucide-react';
 
 type TableColumn = {
   key: string;
@@ -18,8 +19,11 @@ type TableColumn = {
 };
 
 type TableRowData = {
-  [key: string]: React.ReactNode;
-  link: string; // Optional, if the column should render links
+  question: string;
+  topic: string;
+  date: string;
+  link: string;
+  onDelete: () => void;
 };
 
 type GenericTableProps = {
@@ -29,6 +33,25 @@ type GenericTableProps = {
   footerButtonLabel?: string;
   onFooterButtonClick?: () => void;
 };
+
+function renderTableCellContent(colKey: string, row: TableRowData) {
+  switch (colKey) {
+    case 'question':
+      if (row.link) {
+        return <Link href={row.link}>{row[colKey]}</Link>;
+      }
+      return row[colKey];
+    case 'actions':
+      return (
+        <Trash2
+          className='text-red-500 cursor-pointer h-[18px]'
+          onClick={row.onDelete}
+        />
+      );
+    default:
+      return row[colKey];
+  }
+}
 
 export function GenericTable({
   caption,
@@ -53,11 +76,7 @@ export function GenericTable({
             <TableRow key={i}>
               {columns.map((col) => (
                 <TableCell key={col.key}>
-                  {col.key === 'question' && row.link ? (
-                    <Link href={row.link}>{row[col.key]}</Link>
-                  ) : (
-                    row[col.key]
-                  )}
+                  {renderTableCellContent(col.key, row)}
                 </TableCell>
               ))}
             </TableRow>

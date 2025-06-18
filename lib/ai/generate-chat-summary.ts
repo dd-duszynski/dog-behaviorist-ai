@@ -4,7 +4,7 @@ import { ChatOpenAI } from '@langchain/openai';
 import { Message } from '@prisma/client';
 import { TChat } from '../models/chat-model';
 
-export const generateChatSummary = async (chat: TChat) => {
+export const generateAiChatSummary = async (chat: TChat) => {
   const model = new ChatOpenAI({
     apiKey: process.env.OPENAI_API_KEY,
     model: 'gpt-4.1-nano',

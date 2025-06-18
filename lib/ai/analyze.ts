@@ -2,7 +2,7 @@
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { ChatOpenAI } from '@langchain/openai';
 
-export const askAI = async (question: string, dogInfo: string) => {
+export const askAi = async (question: string, dogInfo: string) => {
   const model = new ChatOpenAI({
     apiKey: process.env.OPENAI_API_KEY,
     model: 'gpt-4.1-nano',

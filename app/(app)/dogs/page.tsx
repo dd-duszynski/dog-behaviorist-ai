@@ -13,14 +13,7 @@ export default async function DogsPage() {
   return (
     <div className='flex gap-3 p-3 flex-wrap'>
       {dogs.map((dog) => (
-        <DogCard
-          age={new Date().getFullYear() - dog.birthday.getFullYear()}
-          breed={dog.breed}
-          id={dog.id}
-          key={dog.id}
-          name={dog.name}
-          weight={+dog.weight}
-        />
+        <DogCard dog={dog} key={dog.id} />
       ))}
       <Link href='/new-dog'>
         <Button variant='outline' className='absolute bottom-4 right-4 '>

@@ -1,6 +1,7 @@
 'use server';
 
 import prisma from '@/lib/db/db';
+import { revalidatePath } from 'next/cache';
 
 export async function updateDogAction(
   formData: any,
@@ -53,6 +54,8 @@ export async function updateDogAction(
         weight,
       },
     });
+    revalidatePath('/');
+    revalidatePath('/dogs');
     return result;
   } catch (error) {
     console.error('Error in updateDogAction:', error);

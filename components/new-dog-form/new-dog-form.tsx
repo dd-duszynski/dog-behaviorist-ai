@@ -11,6 +11,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { createDogAction } from '@/lib/db/create-dog-action';
@@ -38,17 +39,19 @@ import { strings } from '@/lib/strings/pl';
 
 const formSchema = z
   .object({
-    photo: z.any().optional(),
-    // .refine((file) => !file || file.size <= 3 * 1024 * 1024, {
-    //   message: 'File size must be less than 3MB.',
-    // }),
-    // .transform(async (file) => {
-    //   console.log('file:', file);
-    //   if (!file) return;
-    //   const arrayBuffer = await file.arrayBuffer();
-    //   console.log('arrayBuffer:', arrayBuffer);
-    //   return new Uint8Array(arrayBuffer); // Konwertuj na Uint8Array
-    // }),
+    photo: z
+      .any()
+      .optional()
+      .refine((file) => !file || file.size <= 1 * 1024 * 1024, {
+        message: 'Plik może mieć maksymalnie 1MB.',
+      })
+      .transform(async (file) => {
+        console.log('file:', file);
+        if (!file) return;
+        const arrayBuffer = await file.arrayBuffer();
+        console.log('arrayBuffer:', arrayBuffer);
+        return new Uint8Array(arrayBuffer); // Konwertuj na Uint8Array
+      }),
     activityLevel: z.string({
       required_error: 'You need to select an activity type.',
     }),
@@ -156,7 +159,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
       breed: isEditMode && dog ? dog.breed : undefined,
       breedOther: isEditMode && dog ? dog.breedOther ?? undefined : undefined,
       castrated: isEditMode && dog ? dog.castrated : 'NO',
-      photo: isEditMode && dog ? dog.photo : undefined,
+      photo: isEditMode && dog && dog.photo ? dog.photo : undefined,
       favoriteActivity:
         isEditMode && dog && dog.favoriteActivity ? dog.favoriteActivity : '',
       favoriteSnack:
@@ -212,33 +215,53 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Card className='w-full h-[300px] flex items-start justify-end relative'>
+                <Card
+                  className={cn(
+                    'w-full h-[300px] flex items-start justify-end relative photoValue',
+                    photoValue && 'bg-zinc-700'
+                  )}
+                >
                   {photoValue && (
                     <Image
                       src={URL.createObjectURL(new Blob([photoValue]))}
-                      className='absolute top-0 left-0 object-cover w-full h-full rounded-xl'
+                      className='absolute top-0 left-0 object-contain w-full h-full rounded-xl'
                       alt={'dog photo'}
                       width={300}
                       height={300}
                     />
                   )}
-                  <Button
-                    variant='outline'
-                    className='m-2 relative'
-                    type='button'
-                  >
-                    <CameraIcon className='ml-auto h-4 w-4 opacity-50 top-0 right-0' />
-                    <Input
-                      accept='image/*'
-                      className='absolute inset-0 opacity-0 cursor-pointer'
-                      type='file'
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files[0]) {
-                          field.onChange(e.target.files[0]); // Update form state
-                        }
+                  <div className='flex flex-col'>
+                    <Button
+                      variant='outline'
+                      className='m-2 relative cursor-pointer'
+                      type='button'
+                    >
+                      <CameraIcon className='ml-auto h-4 w-4 opacity-50 top-0 right-0' />
+                      <Input
+                        accept='image/*'
+                        className='absolute inset-0 opacity-0 '
+                        type='file'
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files[0]) {
+                            field.onChange(e.target.files[0]); // Update form state
+                          }
+                        }}
+                      />
+                    </Button>
+                    <Button
+                      variant='destructive'
+                      className={cn(
+                        'm-2 relative cursor-pointer',
+                        !photoValue ? 'hidden' : 'block'
+                      )}
+                      type='button'
+                      onClick={() => {
+                        field.onChange(null);
                       }}
-                    />
-                  </Button>
+                    >
+                      <Trash2 className='ml-auto h-4 w-4 opacity-50 top-0 right-0' />
+                    </Button>
+                  </div>
                 </Card>
               </FormControl>
               <FormDescription>
