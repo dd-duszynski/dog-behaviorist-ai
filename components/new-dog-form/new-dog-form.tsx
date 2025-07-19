@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -11,15 +10,21 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { createDogAction } from '@/lib/db/create-dog-action';
 import { updateDogAction } from '@/lib/db/update-dog-action';
+import { strings } from '@/lib/strings/pl';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Dog } from '@prisma/client';
-import { Camera as CameraIcon, Check, ChevronsUpDown } from 'lucide-react';
+import {
+  Camera as CameraIcon,
+  Check,
+  ChevronsUpDown,
+  Trash2,
+} from 'lucide-react';
+import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -35,7 +40,6 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Textarea } from '../ui/textarea';
 import { dogBreeds } from './dog-breeds';
-import { strings } from '@/lib/strings/pl';
 
 const formSchema = z
   .object({
@@ -46,21 +50,19 @@ const formSchema = z
         message: 'Plik może mieć maksymalnie 1MB.',
       })
       .transform(async (file) => {
-        console.log('file:', file);
         if (!file) return;
         const arrayBuffer = await file.arrayBuffer();
-        console.log('arrayBuffer:', arrayBuffer);
-        return new Uint8Array(arrayBuffer); // Konwertuj na Uint8Array
+        return new Uint8Array(arrayBuffer);
       }),
     activityLevel: z.string({
-      required_error: 'You need to select an activity type.',
+      required_error: 'Wybierz poziom aktywności.',
     }),
     basicFood: z.string().min(2, {
-      message: 'Basic food must be at least 3 characters.',
+      message: 'Opisz podstawowe jedzenie psa.',
     }),
     birthday: z
       .string({
-        required_error: 'A date of birth is required.',
+        required_error: 'Data urodzenia jest wymagana.',
       })
       .refine(
         (date) => {
@@ -69,40 +71,40 @@ const formSchema = z
         },
         {
           message:
-            'Date of birth must be a valid date and cannot be in the future.',
+            'Data urodzenia musi być poprawną datą i nie może być w przyszłości.',
         }
       )
       .transform((date) => new Date(date)),
     breed: z.string({
-      required_error: 'Breed must be selected.',
+      required_error: 'Rasa musi być wybrana.',
     }),
     breedOther: z.string().optional(),
     castrated: z.enum(['YES', 'NO'], {
-      required_error: 'You need to select.',
+      required_error: 'Musisz wybrać.',
     }),
     favoriteActivity: z.string().optional(),
     favoriteSnack: z.string(),
     favoriteToy: z.string(),
     gender: z.enum(['MALE', 'FEMALE'], {
-      required_error: 'You need to select gender.',
+      required_error: 'Musisz wybrać płeć.',
     }),
     healthProblems: z.enum(['YES', 'NO'], {
-      required_error: 'You need to select.',
+      required_error: 'Musisz wybrać.',
     }),
     healthProblemsDetails: z.string().optional(),
     name: z.string().min(2, {
-      message: 'Username must be at least 2 characters.',
+      message: 'Nazwa musi mieć co najmniej 2 znaki.',
     }),
     origin: z.enum(['BREEDING', 'SHELTER', 'OTHER'], {
-      required_error: 'You need to select an origin type.',
+      required_error: 'Musisz wybrać typ pochodzenia.',
     }),
     originOther: z.string().optional(),
     others: z.string().optional(),
     relationToFood: z.string({
-      required_error: 'Favorite place must be at least 2 characters.',
+      required_error: 'Ulubione miejsce musi mieć co najmniej 2 znaki.',
     }),
     weight: z.string().min(1, {
-      message: 'Weight is required.',
+      message: 'Waga jest wymagana.',
     }),
   })
   .refine(
@@ -110,7 +112,7 @@ const formSchema = z
       (data.origin !== 'OTHER' && !data.originOther) ||
       (data.origin === 'OTHER' && !!data.originOther),
     {
-      message: 'This field is required when origin is OTHER.',
+      message: 'To pole jest wymagane, gdy pochodzenie psa to INNE.',
       path: ['originOther'],
     }
   )
@@ -119,7 +121,7 @@ const formSchema = z
       (data.breed !== 'OTHER' && !data.breedOther) ||
       (data.breed === 'OTHER' && !!data.breedOther),
     {
-      message: 'This field is required when breed is OTHER.',
+      message: 'To pole jest wymagane, gdy rasa psa to INNA.',
       path: ['breedOther'],
     }
   )
@@ -129,7 +131,7 @@ const formSchema = z
       (data.healthProblems === 'YES' && !!data.healthProblemsDetails),
     {
       message:
-        'Health problems details are required when healthProblems is YES.',
+        'Opisz problemy zdrowotne psa, to może pomóc agentowi AI w znalezieniu lepszej pomocy.',
       path: ['healthProblemsDetails'],
     }
   );
@@ -180,12 +182,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('values:', values);
-    // if (values.photo) {
-    //   const arrayBuffer = await values.photo.arrayBuffer();
-    //   console.log('onSubmitAction file:', values.photo);
-    //   console.log('onSubmitAction arrayBuffer:', arrayBuffer);
-    // }
     if (mode === 'create') {
       await createDogAction(values, userId);
       redirect(`/dogs`);
@@ -317,9 +313,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                   </FormItem>
                 </RadioGroup>
               </FormControl>
-              <FormDescription>
-                {strings.new_dog_form.gender_description}
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -337,16 +330,13 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                   value={
                     field.value
                       ? typeof field.value === 'string'
-                        ? field.value // Jeśli wartość jest stringiem, użyj jej bez zmian
-                        : field.value.toISOString().split('T')[0] // Jeśli jest Date, sformatuj
+                        ? field.value
+                        : field.value.toISOString().split('T')[0]
                       : ''
                   }
-                  onChange={(e) => field.onChange(e.target.value)} // Ustaw wartość jako string
+                  onChange={(e) => field.onChange(e.target.value)}
                 />
               </FormControl>
-              <FormDescription>
-                {strings.new_dog_form.birthday_description}
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -423,7 +413,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
               name='breedOther'
               render={({ field }) => (
                 <FormItem>
-                  {/* <FormLabel>Other breed name</FormLabel> */}
                   <FormControl>
                     <Input
                       placeholder='Other breed'
@@ -432,7 +421,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                       disabled={breedValue !== 'OTHER'}
                     />
                   </FormControl>
-                  {/* <FormDescription>This is your dog breed.</FormDescription> */}
                   <FormMessage />
                 </FormItem>
               )}
@@ -646,9 +634,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                   </FormItem>
                 </RadioGroup>
               </FormControl>
-              <FormDescription>
-                {strings.new_dog_form.origin_description}
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -747,9 +732,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
               <FormControl>
                 <Input placeholder='Meat' {...field} />
               </FormControl>
-              <FormDescription>
-                {strings.new_dog_form.favorite_snack_description}
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -763,9 +745,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
               <FormControl>
                 <Input placeholder='Ball' {...field} />
               </FormControl>
-              <FormDescription>
-                {strings.new_dog_form.favorite_toy_description}
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -781,9 +760,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
               <FormControl>
                 <Input placeholder='Running' {...field} />
               </FormControl>
-              <FormDescription>
-                {strings.new_dog_form.favorite_activity_description}
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -805,14 +781,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
           )}
         />
         <div className='flex flex-row gap-4 justify-between'>
-          <Button
-            className='px-6'
-            type='submit'
-            variant='outline'
-            // onClick={form.handleSubmit(onSubmit, (e) => {
-            //   console.log('e:', e);
-            // })}
-          >
+          <Button className='px-6' type='submit' variant='outline'>
             {isEditMode ? strings.general.save : strings.general.submit}
           </Button>
           {isEditMode && (
