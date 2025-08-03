@@ -31,6 +31,9 @@ type GenericTableProps = {
   columns: TableColumn[];
   rows: TableRowData[];
   footerButtonLabel?: string;
+  footerButtonConfig?: {
+    isDropdownButton?: boolean;
+  };
   onFooterButtonClick?: () => void;
 };
 

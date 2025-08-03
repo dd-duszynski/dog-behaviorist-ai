@@ -1,4 +1,4 @@
-import FirstDogPage from '@/components/first-dog-page/first-dog.page';
+import FirstDogPage from '@/components/first-dog-page/first-dog-page';
 import prisma from '@/lib/db/db';
 import { getDogsByUserId } from '@/lib/db/get-dogs-by-user-id';
 import { strings } from '@/lib/strings/pl';

@@ -1,5 +1,5 @@
 import { DogCard } from '@/components/dog-card/dog-card';
-import FirstDogPage from '@/components/first-dog-page/first-dog.page';
+import FirstDogPage from '@/components/first-dog-page/first-dog-page';
 import { Button } from '@/components/ui/button';
 import { getDogsByUserId } from '@/lib/db/get-dogs-by-user-id';
 import { strings } from '@/lib/strings/pl';

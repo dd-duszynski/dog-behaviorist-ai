@@ -1,5 +1,5 @@
-import { strings } from '@/lib/strings/pl';
+import SettingsPageComponent from '@/components/settings-page/settings-page';
 
 export default async function SettingsPage() {
-  return <div>{strings.app_sidebar.settings}</div>;
+  return <SettingsPageComponent />;
 }

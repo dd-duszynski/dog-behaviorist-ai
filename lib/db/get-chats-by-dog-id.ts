@@ -18,6 +18,7 @@ export const getChatsByDogId = async (id: string): Promise<TChat[]> => {
         },
       },
     });
+    console.log('chats:', chats);
     return chats;
   } catch (error) {
     console.error('getChatsByDogId:', error);

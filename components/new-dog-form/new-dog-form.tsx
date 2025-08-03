@@ -400,9 +400,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                     </Command>
                   </PopoverContent>
                 </Popover>
-                <FormDescription>
-                  {strings.new_dog_form.breed_description}
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -436,9 +433,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
               <FormControl>
                 <Input type='number' placeholder='10' {...field} />
               </FormControl>
-              <FormDescription>
-                {strings.new_dog_form.weight_description}
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -475,9 +469,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                   </FormItem>
                 </RadioGroup>
               </FormControl>
-              <FormDescription>
-                {strings.new_dog_form.health_problems_description}
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -589,9 +580,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
                   </FormItem>
                 </RadioGroup>
               </FormControl>
-              <FormDescription>
-                {strings.new_dog_form.castrated_description}
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -675,7 +663,6 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
             </FormItem>
           )}
         />
-        {/* TODO_DD: radio */}
         <FormField
           control={form.control}
           name='relationToFood'

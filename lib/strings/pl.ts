@@ -34,6 +34,11 @@ export const strings = {
       'Aby rozpocząć współpracę z psim behawiorystą AI należy stworzyć profil swojego psa.',
     sign_in_to_view_this_page: 'Zaloguj się, aby zobaczyć tę stronę',
   },
+  settings: {
+    delete_account: 'Usuń konto',
+    delete_account_description:
+      'Usunięcie konta spowoduje utratę wszystkich danych i historii. Czy na pewno chcesz usunąć swoje konto?',
+  },
   dogs: {
     add_dog: 'Dodaj psa',
     edit_dog: 'Edytuj psa',
@@ -69,14 +74,10 @@ export const strings = {
     birthday_label: 'Data urodzenia',
     breed_label: 'Rasa',
     breed_placeholder: 'Wybierz rasę',
-    breed_description: 'To jest rasa Twojego psa.',
     breed_other_placeholder: 'Inna rasa',
     breed_empty_label: 'Nie znaleziono ras.',
     weight_label: 'Waga',
-    weight_description: 'To jest waga Twojego psa (kg)',
     health_problems_label: 'Problemy zdrowotne',
-    health_problems_description:
-      'Czy Twój pies ma jakieś problemy zdrowotne? Tak / Nie',
     health_problems_yes: 'Tak',
     health_problems_no: 'Nie',
     health_problems_details_label: 'Szczegóły problemów zdrowotnych',
@@ -89,7 +90,6 @@ export const strings = {
     activity_level_3: 'Więcej niż 2 godziny',
     activity_level_4: 'Pies pracujący',
     castrated_label: 'Czy był wykastrowany?',
-    castrated_description: 'Czy był wykastrowany? Tak / Nie',
     origin_label: 'Skąd jest?',
     origin_breeding: 'Hodowla',
     origin_shelter: 'Schronisko',

@@ -14,7 +14,7 @@ export const getAllChatsByUserId = async (): Promise<TChat[]> => {
       orderBy: { createdAt: 'desc' },
       include: {
         messages: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: 'asc' },
         },
       },
     });

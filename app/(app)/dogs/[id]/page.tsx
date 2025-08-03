@@ -1,5 +1,5 @@
 import { DogEditableCard } from '@/components/dog-editable-card/dog-editable-card';
-import { DogPageTable } from '@/components/dog-history-table/dog-page-table';
+import { DogHistoryTable } from '@/components/dog-history-table/dog-history-table';
 import { getChatsByDogId } from '@/lib/db/get-chats-by-dog-id';
 import { getDogById } from '@/lib/db/get-dog-by-id';
 import { getUserByClerkID } from '@/lib/db/get-user-by-clerk-id';
@@ -23,7 +23,7 @@ export default async function DogPage({
         <DogEditableCard dog={dog} withImage />
       </div>
       <div className='pt-4'>
-        <DogPageTable dogId={dog.id} chats={chats} />
+        <DogHistoryTable dogs={[dog]} chats={chats} />
       </div>
     </div>
   );
