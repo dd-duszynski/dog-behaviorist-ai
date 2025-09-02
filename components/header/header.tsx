@@ -12,7 +12,7 @@ import { strings } from '@/lib/strings/pl';
 
 export function Header() {
   return (
-    <header className='flex justify-between w-full bg-[#3EA8CF]'>
+    <header className='flex justify-between items-center w-full bg-[#3EA8CF] px-4'>
       <SidebarTrigger />
       <div className='flex justify-start items-center gap-1'>
         <Link href='/' className='font-bold text-xl text-white'>
@@ -30,7 +30,13 @@ export function Header() {
         <SignUpButton />
       </SignedOut>
       <SignedIn>
-        <UserButton />
+        <UserButton
+          appearance={{
+            elements: {
+              avatarBox: 'w-8 h-8',
+            },
+          }}
+        />
       </SignedIn>
     </header>
   );
