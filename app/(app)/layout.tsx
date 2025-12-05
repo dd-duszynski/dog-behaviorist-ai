@@ -30,7 +30,7 @@ export default async function RootLayout({
     <ClerkProvider>
       <html lang='en'>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden bg-gray-50`}
         >
           <SidebarProvider>
             <AppSidebar />

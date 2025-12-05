@@ -26,12 +26,12 @@ const SIDEBAR_WIDTH_ICON = '3rem';
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b';
 
 type SidebarContext = {
-  state: 'expanded' | 'collapsed';
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  openMobile: boolean;
-  setOpenMobile: (open: boolean) => void;
   isMobile: boolean;
+  open: boolean;
+  openMobile: boolean;
+  state: 'expanded' | 'collapsed';
+  setOpen: (open: boolean) => void;
+  setOpenMobile: (open: boolean) => void;
   toggleSidebar: () => void;
 };
 
@@ -42,7 +42,6 @@ function useSidebar() {
   if (!context) {
     throw new Error('useSidebar must be used within a SidebarProvider.');
   }
-
   return context;
 }
 
@@ -689,7 +688,7 @@ const SidebarMenuSub = React.forwardRef<
     ref={ref}
     data-sidebar='menu-sub'
     className={cn(
-      'mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5',
+      'flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border p-1',
       'group-data-[collapsible=icon]:hidden',
       className
     )}

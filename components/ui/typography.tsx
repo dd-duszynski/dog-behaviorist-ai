@@ -7,9 +7,9 @@ type TypographyVariant =
   | 'h3'
   | 'h4'
   | 'p'
+  | 'span'
   | 'blockquote'
   | 'lead'
-  | 'large'
   | 'small'
   | 'muted';
 
@@ -20,16 +20,16 @@ interface TypographyProps {
 }
 
 const variantStyles: Record<TypographyVariant, string> = {
-  h1: 'scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl',
-  h2: 'scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0',
-  h3: 'scroll-m-20 text-2xl font-semibold tracking-tight',
-  h4: 'scroll-m-20 text-xl font-semibold tracking-tight',
-  p: 'leading-7 [&:not(:first-child)]:mt-6',
-  blockquote: 'mt-6 border-l-2 pl-6 italic',
-  lead: 'text-xl text-muted-foreground',
-  large: 'text-lg font-semibold',
-  small: 'text-sm font-medium leading-none',
-  muted: 'text-sm text-muted-foreground',
+  h1: 'text-2xl font-extrabold tracking-tight my-4',
+  h2: 'text-xl font-semibold tracking-tight my-3',
+  h3: 'text-lg font-semibold tracking-tight my-2',
+  h4: 'text-base font-semibold tracking-tight my-2',
+  p: 'text-sm leading-7 my-1',
+  span: 'text-sm',
+  blockquote: 'text-sm border-l-2 pl-6 italic',
+  lead: 'text-sm text-muted-foreground my-1',
+  small: 'text-xs font-medium leading-none my-1',
+  muted: 'text-xs text-muted-foreground my-1',
 };
 
 const variantElements: Record<TypographyVariant, any> = {
@@ -38,9 +38,9 @@ const variantElements: Record<TypographyVariant, any> = {
   h3: 'h3',
   h4: 'h4',
   p: 'p',
+  span: 'span',
   blockquote: 'blockquote',
   lead: 'p',
-  large: 'div',
   small: 'small',
   muted: 'p',
 };

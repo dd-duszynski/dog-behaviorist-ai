@@ -15,15 +15,15 @@ export const strings = {
     confirm: 'Potwierdź',
     are_you_sure: 'Czy na pewno?',
     unauthorized: 'Nieautoryzowany dostęp',
-  },
-  header: {
-    title: 'Psi Behawiorysta AI',
-  },
-  app_sidebar: {
-    home: 'Pulpit',
-    your_dogs: 'Twoje psy',
+    your_dog: 'Twój pies',
     history: 'Historia',
+    home: 'Pulpit',
     settings: 'Ustawienia',
+    your_dogs: 'Twoje psy',
+    chats: 'Rozmowy',
+    achieved_goals: 'Osiągnięte cele',
+    progress: 'Postępy',
+    title: 'Psi Behawiorysta AI',
   },
   home: {
     welcome: 'Witaj',
@@ -33,6 +33,7 @@ export const strings = {
     get_started_description:
       'Aby rozpocząć współpracę z psim behawiorystą AI należy stworzyć profil swojego psa.',
     sign_in_to_view_this_page: 'Zaloguj się, aby zobaczyć tę stronę',
+    last_activity: 'Ostatnia aktywność',
   },
   settings: {
     delete_account: 'Usuń konto',
@@ -116,5 +117,11 @@ export const strings = {
       'Jeśli uważasza, że warto dodać coś jeszcze. Np. trudna przeszłość, znaleziony w złym stanie.',
     submit: 'Wyślij',
     save: 'Zapisz',
+  },
+  chat: {
+    new_chat: 'Nowa rozmowa',
+    start_conversation: 'Rozpocznij rozmowę z AI',
+    start_conversation_description:
+      'Porozmawiaj o problemach behawioralnych swoich psów. Nasz AI behawiorysta pomoże Ci zrozumieć zachowanie pupila i zaproponuje rozwiązania.',
   },
 };

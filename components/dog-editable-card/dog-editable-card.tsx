@@ -18,6 +18,7 @@ import { strings } from '@/lib/strings/pl';
 import Image from 'next/image';
 import { getImageSrc } from '@/lib/utils/getImageSrc';
 import { getYearsAndMonths } from '@/lib/utils/getYearsAndMonths';
+import { Typography } from '../ui/typography';
 
 type DogEditableCardProps = {
   dog: Dog;
@@ -51,8 +52,12 @@ export const DogEditableCard = ({ dog, withImage }: DogEditableCardProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p>{`${strings.general.age}: ${age}`}</p>
-          <p>{`${strings.general.weight}: ${dog.weight} ${strings.general.kg}`}</p>
+          <Typography variant='p'>
+            {`${strings.general.age}: ${age}`}
+          </Typography>
+          <Typography variant='p'>
+            {`${strings.general.weight}: ${dog.weight} ${strings.general.kg}`}
+          </Typography>
         </CardContent>
         <CardFooter>
           <div className='flex flex-col gap-2 w-full'>

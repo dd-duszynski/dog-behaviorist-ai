@@ -5,11 +5,6 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { getAllChatsByUserId } from '@/lib/db/get-all-chats-by-user-id';
 import { getDogsByUserId } from '@/lib/db/get-dogs-by-user-id';
@@ -25,6 +20,29 @@ import {
   Settings,
   Venus,
 } from 'lucide-react';
+import { SidebarMenuItemWithActive } from './sidebar-menu-item';
+
+export async function AppSidebar() {
+  const dogs = await getDogsByUserId();
+  const chats = await getAllChatsByUserId();
+  const menuItems = generateMenuItems(dogs, chats);
+  return (
+    <Sidebar collapsible='icon' className='bg-primary'>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>{strings.general.title}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {menuItems.map((item) => (
+                <SidebarMenuItemWithActive key={item.title} {...item} />
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
+  );
+}
 
 const prepareChatTitle = (params: {
   chats: TChat[];
@@ -55,75 +73,32 @@ const generateMenuItems = (dogs: Dog[], chats: TChat[]) => {
       chatId: chat.id,
     }),
     url: `/chat/${chat.id}`,
-    icon: BotMessageSquare,
+    icon: <BotMessageSquare />,
   }));
 
   return [
     {
-      title: strings.app_sidebar.home,
+      icon: <Home />,
+      title: strings.general.home,
       url: '/',
-      icon: Home,
     },
     {
-      title: strings.app_sidebar.your_dogs,
-      url: '/dogs',
-      icon: DogIcon,
+      icon: <DogIcon />,
       items: dogsItems,
+      title: strings.general.your_dogs,
+      url: '/dogs',
     },
     {
-      title: strings.app_sidebar.history,
-      url: '/history',
-      icon: PawPrint,
-      items: chatsItems,
       className: 'wordspace-nowrap',
+      icon: <PawPrint />,
+      items: chatsItems,
+      title: strings.general.history,
+      url: '/history',
     },
     {
-      title: strings.app_sidebar.settings,
+      icon: <Settings />,
+      title: strings.general.settings,
       url: '/settings',
-      icon: Settings,
     },
   ];
 };
-
-export async function AppSidebar() {
-  const dogs = await getDogsByUserId();
-  const chats = await getAllChatsByUserId();
-  const menuItems = generateMenuItems(dogs, chats);
-  return (
-    <Sidebar collapsible='icon'>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>{strings.header.title}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                  {item.items?.length ? (
-                    <SidebarMenuSub>
-                      {item.items.map((i) => (
-                        <SidebarMenuSubItem key={i.title} className='truncate'>
-                          <SidebarMenuSubButton
-                            asChild
-                            className='text-ellipsis text-nowrap whitespace-nowrap'
-                          >
-                            <a href={i.url}>{i.title}</a>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  ) : null}
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
-  );
-}

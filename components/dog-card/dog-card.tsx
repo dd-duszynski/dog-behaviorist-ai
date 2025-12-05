@@ -14,6 +14,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { BotMessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Typography } from '../ui/typography';
 
 type DogCardProps = {
   dog: TDog;
@@ -43,20 +44,25 @@ export function DogCard({ dog }: DogCardProps) {
             </div>
           </CardTitle>
           <CardDescription>
-            <p>{`${strings.new_dog_form.breed_label}: ${dog.breed}`}</p>
-            <p>{`${strings.general.age}: ${getYearsAndMonths(
-              dog.birthday
-            )}`}</p>
-            <p>{`${strings.general.weight}: ${dog.weight} ${strings.general.kg}`}</p>
+            <Typography variant='p'>
+              {`${strings.general.age}: ${getYearsAndMonths(dog.birthday)}`}
+              {`${strings.new_dog_form.breed_label}: ${dog.breed}`}
+            </Typography>
+            <Typography variant='p'>
+              {`${strings.general.age}: ${getYearsAndMonths(dog.birthday)}`}
+            </Typography>
+            <Typography variant='p'>
+              {`${strings.general.weight}: ${dog.weight} ${strings.general.kg}`}
+            </Typography>
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Image
-            src={imageSrc}
-            className='rounded-2xl h-[260px] object-cover'
             alt={dog.name}
-            width={260}
+            className='rounded-2xl h-[260px] object-cover'
             height={260}
+            src={imageSrc}
+            width={260}
           />
         </CardContent>
       </Card>

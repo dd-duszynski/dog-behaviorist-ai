@@ -12,14 +12,14 @@ import { strings } from '@/lib/strings/pl';
 
 export function Header() {
   return (
-    <header className='flex justify-between items-center w-full bg-[#3EA8CF] px-4'>
-      <SidebarTrigger />
+    <header className='flex justify-between items-center w-full bg-primary px-4'>
+      <SidebarTrigger className='text-white h-10 w-10 [&>svg]:!w-5 [&>svg]:!h-5' />
       <div className='flex justify-start items-center gap-1'>
         <Link href='/' className='font-bold text-xl text-white'>
-          {strings.header.title}
+          {strings.general.title}
         </Link>
         <Image
-          alt={strings.header.title}
+          alt={strings.general.title}
           height={60}
           src='/logo2.webp'
           width={60}
