@@ -1,6 +1,9 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Typography } from '../ui/typography';
+import { getUserByClerkID } from '@/lib/db/get-user-by-clerk-id';
+import { strings } from '@/lib/strings/pl';
+import { EditDogPageComponent } from '../edit-dog-page/edit-dog-page';
 
 type DogCardProps = {
   description: string;
@@ -32,4 +35,10 @@ export function IconCard({
       </CardContent>
     </Card>
   );
+}
+export default async function NewDogPage() {
+  const user = await getUserByClerkID();
+  if (!user)
+    return <Typography variant='h2'>{strings.general.unauthorized}</Typography>;
+  return <EditDogPageComponent userId={user.id} mode='create' />;
 }

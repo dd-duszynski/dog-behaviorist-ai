@@ -26,11 +26,11 @@ export function SidebarMenuItemWithActive(
   const pathname = usePathname();
   const isActive = pathname === item.url;
   const itemClassName =
-    'py-5 pl-5 pr-0 rounded-2xl hover:bg-gradient-to-br from-primary-400 to-primary-500 hover:text-white';
+    'py-5 pl-5 pr-0 rounded-2xl hover:bg-gradient-to-br from-primary-400 to-primary-300 hover:text-white';
   const activeItemClassName =
-    'bg-gradient-to-br from-primary-400 to-primary-500 text-white';
+    'bg-gradient-to-br from-primary-500 to-primary-400 text-white';
   return (
-    <SidebarMenuItem>
+    <SidebarMenuItem className='select-none'>
       <SidebarMenuButton
         asChild
         className={cn(itemClassName, isActive && activeItemClassName)}
@@ -49,7 +49,6 @@ export function SidebarMenuItemWithActive(
                 <SidebarMenuSubButton
                   asChild
                   className={cn(
-                    'truncate',
                     itemClassName,
                     isSubActive && activeItemClassName
                   )}

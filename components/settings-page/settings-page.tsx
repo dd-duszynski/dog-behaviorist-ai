@@ -6,23 +6,24 @@ import { Typography } from '../ui/typography';
 
 export default function SettingsPageComponent() {
   return (
-    <div className='p-4'>
-      <div className='pt-4'>
-        <Typography variant='h1' className='text-gray-500 m-0'>
-          {strings.general.settings}
-        </Typography>
-        <Typography variant='p'>
-          {strings.settings.delete_account_description}
-        </Typography>
-        <Button
-          variant='destructive'
-          onClick={() => {
-            /* Handle account deletion */
-          }}
-        >
-          {strings.settings.delete_account}
-        </Button>
-      </div>
+    <div>
+      <Typography variant='h1' className='text-gray-500 m-0'>
+        {strings.general.settings}
+      </Typography>
+      <Typography variant='p'>
+        {strings.settings.delete_account_description}
+      </Typography>
+      <Button
+        variant='destructive'
+        onClick={() => {
+          /* Handle account deletion */
+        }}
+      >
+        {strings.settings.delete_account}
+      </Button>
     </div>
   );
 }
+
+// Poziom zaawansowania Właściciela / AI - na jakim maja byc odpowiedzi.
+// 1 - to moj pierwszy pies,2,3 - znam sie na psach

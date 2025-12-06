@@ -1,5 +1,5 @@
-import { Chat } from '@/components/chat/chat';
-import { NewChat } from '@/components/chat/new-chat';
+import { ChatPageComponent } from '@/components/chat-page/chat-page';
+import { Typography } from '@/components/ui/typography';
 import { getUserByClerkID } from '@/lib/db/get-user-by-clerk-id';
 import { strings } from '@/lib/strings/pl';
 
@@ -9,18 +9,18 @@ export default async function ChatPage({
   params: Promise<{ id: string }>;
 }) {
   const user = await getUserByClerkID();
-  if (!user) return <div>{strings.general.unauthorized}</div>;
+  if (!user)
+    return <Typography variant='h2'>{strings.general.unauthorized}</Typography>;
   const id = (await params).id;
   const isNewChat = id.includes('new');
   const dogId = isNewChat ? extractIdFromPath(id) : '';
   return (
-    <div className='p-3 flex justify-center w-full'>
-      {isNewChat ? (
-        <NewChat userId={user.id} id={id} dogId={dogId} />
-      ) : (
-        <Chat userId={user.id} id={id} />
-      )}
-    </div>
+    <ChatPageComponent
+      dogId={dogId}
+      id={id}
+      isNewChat={isNewChat}
+      user={user}
+    />
   );
 }
 

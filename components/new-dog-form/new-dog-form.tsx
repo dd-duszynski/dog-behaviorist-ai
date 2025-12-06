@@ -14,10 +14,10 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { createDogAction } from '@/lib/db/create-dog-action';
 import { updateDogAction } from '@/lib/db/update-dog-action';
+import { TDog } from '@/lib/models/dog-model';
 import { strings } from '@/lib/strings/pl';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Dog } from '@prisma/client';
 import {
   Camera as CameraIcon,
   Check,
@@ -136,21 +136,15 @@ const formSchema = z
     }
   );
 
-type NewDogFormProps = {
-  mode: 'create';
+export type NewDogFormProps = {
+  dog: TDog | null;
+  mode: 'edit' | 'create';
   userId: string;
 };
 
-type EditDogFormProps = {
-  dog: Dog;
-  mode: 'update';
-  userId: string;
-};
-
-export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
-  const { mode, userId } = props;
-  const isEditMode = mode === 'update' ? true : false;
-  const dog = 'dog' in props ? props.dog : null;
+export function NewDogForm(props: NewDogFormProps) {
+  const { dog, mode, userId } = props;
+  const isEditMode = mode === 'edit' ? true : false;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -186,7 +180,7 @@ export function NewDogForm(props: NewDogFormProps | EditDogFormProps) {
       await createDogAction(values, userId);
       redirect(`/dogs`);
     }
-    if (mode === 'update' && !!dog) {
+    if (mode === 'edit' && !!dog) {
       await updateDogAction(values, userId, dog.id);
       redirect(`/dogs/${dog.id}`);
     }

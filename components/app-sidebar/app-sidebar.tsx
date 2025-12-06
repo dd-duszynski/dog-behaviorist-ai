@@ -3,7 +3,6 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
 } from '@/components/ui/sidebar';
 import { getAllChatsByUserId } from '@/lib/db/get-all-chats-by-user-id';
@@ -30,7 +29,6 @@ export async function AppSidebar() {
     <Sidebar collapsible='icon' className='bg-primary'>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>{strings.general.title}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (

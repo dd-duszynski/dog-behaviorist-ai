@@ -4,13 +4,13 @@ import { QuickStats } from '../quick-stats/quick-stats';
 import { StartConversationCard } from '../start-conversation-card/start-conversation-card';
 import { Typography } from '../ui/typography';
 
-type HomePageProps = {
+type HomePageComponentProps = {
   dogs: TDog[];
 };
 
-export const HomePage = ({ dogs }: HomePageProps) => {
+export function HomePageComponent({ dogs }: HomePageComponentProps) {
   return (
-    <div className='px-8'>
+    <div>
       <Typography variant='h2'>Witaj z powrotem! 🐾</Typography>
       <Typography variant='p'>
         Twój AI behawiorysta zawsze gotowy do pomocy z Twoimi pupilami
@@ -20,4 +20,4 @@ export const HomePage = ({ dogs }: HomePageProps) => {
       <LastActivityCard dogs={dogs} />
     </div>
   );
-};
+}

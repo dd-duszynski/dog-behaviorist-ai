@@ -3,7 +3,7 @@ import { strings } from '@/lib/strings/pl';
 import Link from 'next/link';
 import { Typography } from '../ui/typography';
 
-export default async function FirstDogPage() {
+export async function FirstDogPageComponent() {
   return (
     <div className='flex flex-col items-center justify-center h-full '>
       <Typography variant='p'>{strings.first_dog_page.paragraph1}</Typography>

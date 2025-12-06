@@ -36,7 +36,7 @@ export default async function RootLayout({
             <AppSidebar />
             <main className='w-full min-h-full relative'>
               <Header />
-              <div className='overflow-y-auto h-[calc(100vh-6rem)]'>
+              <div className='overflow-y-auto h-[calc(100vh-6rem)] py-2 px-4'>
                 {children}
               </div>
             </main>
